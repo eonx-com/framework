@@ -1,0 +1,27 @@
+{
+    "name": "eoneopay/framework",
+    "description": "The EoneoPay Framework",
+    "keywords": ["eoneopay", "framework"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=7.1",
+        "laravel/lumen-framework": "5.5.*",
+        "roave/security-advisories": "dev-master",
+        "eoneopay/utils": "dev-master",
+        "eoneopay/api-formats": "dev-master",
+        "eoneopay/external": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0",
+        "vlucas/phpdotenv": "~2.2"
+    },
+    "autoload": {
+        "psr-4": { "EoneoPay\\Framework\\": "src/" }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true
+    }
+}
