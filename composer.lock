@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e06ad8604525207899f4b24bdc307202",
+    "content-hash": "627127983efb5762ff12bb43ab25c62f",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -78,8 +78,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://git@bitbucket.org/eoneopay/api-formats.git",
+                "url": "https://bitbucket.org/eoneopay/api-formats.git",
                 "reference": "d4ebd79910938e63cf1130bac1cab29685985e44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://bitbucket.org/eoneopay/api-formats/get/d4ebd79910938e63cf1130bac1cab29685985e44.zip",
+                "reference": "d4ebd79910938e63cf1130bac1cab29685985e44",
+                "shasum": ""
             },
             "require": {
                 "eoneopay/utils": "dev-master",
@@ -104,15 +110,12 @@
                     "EoneoPay\\ApiFormats\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\EoneoPay\\ApiFormats\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Api formats from EoneoPay.",
+            "homepage": "https://bitbucket.org/eoneopay/api-formats",
             "keywords": [
                 "api",
                 "eoneopay",
@@ -125,8 +128,14 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://git@bitbucket.org/eoneopay/external.git",
-                "reference": "4672dd4316d598fd7566404517a672b8c78df15f"
+                "url": "https://bitbucket.org/eoneopay/external.git",
+                "reference": "abf8adece6fa83133ac69e25489b1ffcdb628068"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://bitbucket.org/eoneopay/external/get/abf8adece6fa83133ac69e25489b1ffcdb628068.zip",
+                "reference": "abf8adece6fa83133ac69e25489b1ffcdb628068",
+                "shasum": ""
             },
             "require": {
                 "eoneopay/utils": "dev-master@dev",
@@ -154,27 +163,30 @@
                     "EoneoPay\\External\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\EoneoPay\\External\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "External libraries shared between Eoneo Pay applications",
+            "homepage": "https://bitbucket.org/eoneopay/external",
             "keywords": [
                 "external"
             ],
-            "time": "2018-02-06 00:12:37"
+            "time": "2018-02-07 05:14:09"
         },
         {
             "name": "eoneopay/utils",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://git@bitbucket.org/eoneopay/utils.git",
-                "reference": "18b0874f6a0abbc67eb742ec3cf03412500e3082"
+                "url": "https://bitbucket.org/eoneopay/utils.git",
+                "reference": "7e47e827b11e9204f090b3decc68130057185544"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://bitbucket.org/eoneopay/utils/get/7e47e827b11e9204f090b3decc68130057185544.zip",
+                "reference": "7e47e827b11e9204f090b3decc68130057185544",
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.1",
@@ -198,24 +210,22 @@
                     "EoneoPay\\Utils\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\EoneoPay\\Utils\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Utility and helper classes",
+            "homepage": "https://bitbucket.org/eoneopay/utils",
             "keywords": [
+                "eoneopay",
                 "helpers",
                 "utilities"
             ],
-            "time": "2018-02-05 03:29:47"
+            "time": "2018-02-07 05:43:03"
         },
         {
             "name": "illuminate/auth",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/auth.git",
@@ -266,7 +276,7 @@
         },
         {
             "name": "illuminate/broadcasting",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/broadcasting.git",
@@ -316,7 +326,7 @@
         },
         {
             "name": "illuminate/bus",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/bus.git",
@@ -361,7 +371,7 @@
         },
         {
             "name": "illuminate/cache",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/cache.git",
@@ -410,7 +420,7 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
@@ -454,7 +464,7 @@
         },
         {
             "name": "illuminate/console",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/console.git",
@@ -504,7 +514,7 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -548,7 +558,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -592,16 +602,16 @@
         },
         {
             "name": "illuminate/database",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/database.git",
-                "reference": "e25d8236f849d2166fdd13ab15e391aecb954a4a"
+                "reference": "4c608d7e46baa06f5250de1a4a459c1d0dbb08ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/database/zipball/e25d8236f849d2166fdd13ab15e391aecb954a4a",
-                "reference": "e25d8236f849d2166fdd13ab15e391aecb954a4a",
+                "url": "https://api.github.com/repos/illuminate/database/zipball/4c608d7e46baa06f5250de1a4a459c1d0dbb08ad",
+                "reference": "4c608d7e46baa06f5250de1a4a459c1d0dbb08ad",
                 "shasum": ""
             },
             "require": {
@@ -647,11 +657,11 @@
                 "orm",
                 "sql"
             ],
-            "time": "2018-01-24T13:56:01+00:00"
+            "time": "2018-02-05T15:11:42+00:00"
         },
         {
             "name": "illuminate/encryption",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/encryption.git",
@@ -697,7 +707,7 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
@@ -742,7 +752,7 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
@@ -792,7 +802,7 @@
         },
         {
             "name": "illuminate/hashing",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/hashing.git",
@@ -836,7 +846,7 @@
         },
         {
             "name": "illuminate/http",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/http.git",
@@ -882,7 +892,7 @@
         },
         {
             "name": "illuminate/pagination",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pagination.git",
@@ -926,7 +936,7 @@
         },
         {
             "name": "illuminate/pipeline",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/pipeline.git",
@@ -970,7 +980,7 @@
         },
         {
             "name": "illuminate/queue",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/queue.git",
@@ -1027,7 +1037,7 @@
         },
         {
             "name": "illuminate/session",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/session.git",
@@ -1077,16 +1087,16 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "f6eb4fc687a1956cb44007604cd31dc50858eca9"
+                "reference": "139eb279bc18a1229c6c49a618d122c613edb2c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/f6eb4fc687a1956cb44007604cd31dc50858eca9",
-                "reference": "f6eb4fc687a1956cb44007604cd31dc50858eca9",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/139eb279bc18a1229c6c49a618d122c613edb2c7",
+                "reference": "139eb279bc18a1229c6c49a618d122c613edb2c7",
                 "shasum": ""
             },
             "require": {
@@ -1130,11 +1140,11 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2018-01-19T13:47:08+00:00"
+            "time": "2018-02-04T20:29:16+00:00"
         },
         {
             "name": "illuminate/translation",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/translation.git",
@@ -1179,7 +1189,7 @@
         },
         {
             "name": "illuminate/validation",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/validation.git",
@@ -1229,7 +1239,7 @@
         },
         {
             "name": "illuminate/view",
-            "version": "v5.5.33",
+            "version": "v5.5.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/view.git",

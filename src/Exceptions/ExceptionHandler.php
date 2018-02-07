@@ -8,8 +8,8 @@ use EoneoPay\ApiFormats\External\Interfaces\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderInterface;
 use EoneoPay\External\ORM\Exceptions\EntityValidationException;
-use EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface;
 use EoneoPay\Utils\Exceptions\CriticalException;
+use EoneoPay\Utils\Exceptions\NotFoundException;
 use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\Interfaces\BaseExceptionInterface;
 use Exception;
@@ -56,7 +56,7 @@ class ExceptionHandler extends Handler
     {
         $this->encoder = $this->getEncoder($request);
 
-        if ($exception instanceof EntityNotFoundExceptionInterface) {
+        if ($exception instanceof NotFoundException) {
             /** @var RuntimeException $exception */
             return $this->entityNotFoundResponse($exception);
         }
@@ -94,13 +94,13 @@ class ExceptionHandler extends Handler
     /**
      * Create response for entity not found exceptions.
      *
-     * @param \EoneoPay\Utils\Exceptions\RuntimeException $exception
+     * @param \EoneoPay\Utils\Exceptions\NotFoundException $exception
      *
      * @return \Illuminate\Http\Response
      *
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
      */
-    protected function entityNotFoundResponse(RuntimeException $exception): Response
+    protected function entityNotFoundResponse(NotFoundException $exception): Response
     {
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getErrorCode(),
