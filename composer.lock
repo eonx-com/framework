@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://bitbucket.org/eoneopay/external.git",
-                "reference": "abf8adece6fa83133ac69e25489b1ffcdb628068"
+                "reference": "2259686e3889adbd51fce684d90c0eb8d643d4d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/eoneopay/external/get/abf8adece6fa83133ac69e25489b1ffcdb628068.zip",
-                "reference": "abf8adece6fa83133ac69e25489b1ffcdb628068",
+                "url": "https://bitbucket.org/eoneopay/external/get/2259686e3889adbd51fce684d90c0eb8d643d4d9.zip",
+                "reference": "2259686e3889adbd51fce684d90c0eb8d643d4d9",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +172,7 @@
             "keywords": [
                 "external"
             ],
-            "time": "2018-02-07 05:14:09"
+            "time": "2018-02-07 22:04:49"
         },
         {
             "name": "eoneopay/utils",
