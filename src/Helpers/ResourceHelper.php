@@ -71,7 +71,7 @@ class ResourceHelper implements ResourceHelperInterface
             $uses = $route['action']['uses'] ?? '';
             $resource = $this->usesToResource($route['action']['uses'] ?? '');
 
-            if (null === $resource) {
+            if (!\class_exists($resource)) {
                 throw new InvalidUsesException(\sprintf(
                     'Invalid uses "%s" for route: [%s]%s',
                     $uses,
