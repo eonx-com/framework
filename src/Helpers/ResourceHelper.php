@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace EoneoPay\Framework\Helpers;
 
-use EoneoPay\Framework\Helpers\Exceptions\InvalidUsesException;
 use EoneoPay\Framework\Helpers\Exceptions\UnsupportedResourceException;
 use EoneoPay\Framework\Helpers\Interfaces\ResourceHelperInterface;
 use Illuminate\Http\Request;
@@ -67,20 +66,14 @@ class ResourceHelper implements ResourceHelperInterface
         $routes = [];
 
         foreach ($router->getRoutes() as $routeName => $route) {
-            $method = $route['method'] ?? '-no_method-';
-            $uses = $route['action']['uses'] ?? '';
             $resource = $this->usesToResource($route['action']['uses'] ?? '');
 
+            // Skip if resource not valid class
             if (!\class_exists($resource)) {
-                throw new InvalidUsesException(\sprintf(
-                    'Invalid uses "%s" for route: [%s]%s',
-                    $uses,
-                    $method,
-                    $route['uri'] ?? '-no_uri-'
-                ));
+                continue;
             }
 
-            $routes[$this->routeToRegex($routeName)] = [$resource, $method];
+            $routes[$this->routeToRegex($routeName)] = [$resource, $route['method']];
         }
 
         \uksort($routes, function ($current, $next) {
