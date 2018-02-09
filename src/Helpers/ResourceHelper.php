@@ -67,19 +67,20 @@ class ResourceHelper implements ResourceHelperInterface
         $routes = [];
 
         foreach ($router->getRoutes() as $routeName => $route) {
+            $method = $route['method'] ?? '-no_method-';
             $uses = $route['action']['uses'] ?? '';
             $resource = $this->usesToResource($route['action']['uses'] ?? '');
 
-            if (null === $resource) {
+            if (!\class_exists($resource)) {
                 throw new InvalidUsesException(\sprintf(
                     'Invalid uses "%s" for route: [%s]%s',
                     $uses,
-                    $route['method'] ?? '-no_method-',
+                    $method,
                     $route['uri'] ?? '-no_uri-'
                 ));
             }
 
-            $routes[$this->routeToRegex($routeName)] = [$resource, $route['method']];
+            $routes[$this->routeToRegex($routeName)] = [$resource, $method];
         }
 
         \uksort($routes, function ($current, $next) {
