@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace EoneoPay\Framework\Helpers;
 
-use EoneoPay\Framework\Helpers\Exceptions\UnsupportedEndpointException;
-use EoneoPay\Framework\Helpers\Interfaces\EndpointHelperInterface;
+use EoneoPay\Framework\Helpers\Exceptions\InvalidUsesException;
+use EoneoPay\Framework\Helpers\Exceptions\UnsupportedResourceException;
+use EoneoPay\Framework\Helpers\Interfaces\ResourceHelperInterface;
 use Laravel\Lumen\Routing\Router;
 
-class EndpointHelper implements EndpointHelperInterface
+class ResourceHelper implements ResourceHelperInterface
 {
     /**
      * @var string
@@ -23,45 +24,60 @@ class EndpointHelper implements EndpointHelperInterface
      * EndpointGuesser constructor.
      *
      * @param \Laravel\Lumen\Routing\Router $router
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\InvalidUsesException
      */
     public function __construct(Router $router)
     {
         $this->initRoutes($router);
     }
-    
+
     /**
-     * Get endpoint pattern for given path info.
+     * Get resource for given path info.
      *
      * @param string $pathInfo
      *
      * @return string
      *
-     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedEndpointException
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedResourceException
      */
-    public function getPatternForPathInfo(string $pathInfo): string
+    public function getResourceForPathInfo(string $pathInfo): string
     {
         $pathInfo = \rtrim($pathInfo, '/');
 
-        foreach ($this->routes as $regex => $pattern) {
+        foreach ($this->routes as $regex => $resource) {
             if (\preg_match($regex, $pathInfo)) {
-                return $pattern;
+                return $resource;
             }
         }
 
-        throw new UnsupportedEndpointException(\sprintf('Endpoint %s not supported', $pathInfo));
+        throw new UnsupportedResourceException(\sprintf('Resource %s not supported', $pathInfo));
     }
 
     /**
      * Set routes array.
      *
      * @param \Laravel\Lumen\Routing\Router $router
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\InvalidUsesException
      */
     private function initRoutes(Router $router): void
     {
         $routes = [];
 
         foreach ($router->getRoutes() as $routeName => $route) {
-            $routes[$this->routeToRegex($routeName)] = $route['uri'] ?? null;
+            $uses = $this->usesToResource($route['action']['uses'] ?? '');
+
+            if (null === $uses) {
+                throw new InvalidUsesException(\sprintf(
+                    'Invalid uses "%s" for route: [%s]%s',
+                    $uses,
+                    $route['method'] ?? '-no_method-',
+                    $route['uri'] ?? '-no_uri-'
+                ));
+            }
+
+            $routes[$this->routeToRegex($routeName)] = $uses;
         }
 
         \uksort($routes, function ($current, $next) {
@@ -85,5 +101,19 @@ class EndpointHelper implements EndpointHelperInterface
         $route = \preg_replace('/\{(\w+):(.+?)\}/', '\2', $route);
 
         return \sprintf('#^%s$#', $route);
+    }
+
+    /**
+     * Get resource from uses string.
+     *
+     * @param string $uses
+     *
+     * @return null|string
+     */
+    private function usesToResource(string $uses): ?string
+    {
+        $split = \explode('@', $uses);
+
+        return $split[0] ?? null;
     }
 }

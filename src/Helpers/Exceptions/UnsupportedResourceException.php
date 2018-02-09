@@ -5,7 +5,7 @@ namespace EoneoPay\Framework\Helpers\Exceptions;
 
 use EoneoPay\Utils\Exceptions\CriticalException;
 
-class UnsupportedEndpointException extends CriticalException
+class UnsupportedResourceException extends CriticalException
 {
     //
 }
