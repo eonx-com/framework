@@ -6,6 +6,7 @@ namespace EoneoPay\Framework\Helpers;
 use EoneoPay\Framework\Helpers\Exceptions\InvalidUsesException;
 use EoneoPay\Framework\Helpers\Exceptions\UnsupportedResourceException;
 use EoneoPay\Framework\Helpers\Interfaces\ResourceHelperInterface;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Router;
 
 class ResourceHelper implements ResourceHelperInterface
@@ -33,20 +34,20 @@ class ResourceHelper implements ResourceHelperInterface
     }
 
     /**
-     * Get resource for given path info.
+     * Get resource for given request.
      *
-     * @param string $pathInfo
+     * @param Request $request
      *
      * @return string
      *
      * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedResourceException
      */
-    public function getResourceForPathInfo(string $pathInfo): string
+    public function getResourceForRequest(Request $request): string
     {
-        $pathInfo = \rtrim($pathInfo, '/');
+        $pathInfo = \rtrim($request->getPathInfo(), '/');
 
-        foreach ($this->routes as $regex => $resource) {
-            if (\preg_match($regex, $pathInfo)) {
+        foreach ($this->routes as $regex => [$resource, $method]) {
+            if (\preg_match($regex, $pathInfo) && \strtoupper($request->getMethod()) === \strtoupper($method)) {
                 return $resource;
             }
         }
@@ -66,9 +67,10 @@ class ResourceHelper implements ResourceHelperInterface
         $routes = [];
 
         foreach ($router->getRoutes() as $routeName => $route) {
-            $uses = $this->usesToResource($route['action']['uses'] ?? '');
+            $uses = $route['action']['uses'] ?? '';
+            $resource = $this->usesToResource($route['action']['uses'] ?? '');
 
-            if (null === $uses) {
+            if (null === $resource) {
                 throw new InvalidUsesException(\sprintf(
                     'Invalid uses "%s" for route: [%s]%s',
                     $uses,
@@ -77,7 +79,7 @@ class ResourceHelper implements ResourceHelperInterface
                 ));
             }
 
-            $routes[$this->routeToRegex($routeName)] = $uses;
+            $routes[$this->routeToRegex($routeName)] = [$resource, $route['method']];
         }
 
         \uksort($routes, function ($current, $next) {

@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace EoneoPay\Framework\Helpers\Interfaces;
 
+use Illuminate\Http\Request;
+
 interface ResourceHelperInterface
 {
     /**
-     * Get resource for given path info.
+     * Get resource for given request.
      *
-     * @param string $pathInfo
+     * @param Request $request
      *
      * @return string
      */
-    public function getResourceForPathInfo(string $pathInfo): string;
+    public function getResourceForRequest(Request $request): string;
 }
