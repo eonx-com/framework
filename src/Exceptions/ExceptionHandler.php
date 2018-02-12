@@ -24,7 +24,7 @@ class ExceptionHandler extends Handler
     /**
      * @var RequestEncoderInterface
      */
-    private $encoder;
+    protected $encoder;
 
     /**
      * @var \EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface
