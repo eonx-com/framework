@@ -57,8 +57,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
      * @throws \InvalidArgumentException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function deleteEntityAndRespond(string $entityClass, string $entityId): FormattedApiResponseInterface
     {
@@ -99,6 +98,7 @@ abstract class Controller extends BaseController implements ControllerInterface
         $this->entityManager->flush();
     }
 
+    /** @noinspection PhpDocRedundantThrowsInspection Exception thrown dynamically */
     /**
      * Retrieve entity by id.
      *
@@ -107,8 +107,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\External\ORM\Interfaces\EntityInterface
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function retrieveEntity(string $entityClass, string $entityId): EntityInterface
     {
@@ -146,8 +145,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
      * @throws \InvalidArgumentException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function updateEntityAndRespond(
         string $entityClass,

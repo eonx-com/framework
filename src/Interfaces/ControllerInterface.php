@@ -27,7 +27,7 @@ interface ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function deleteEntityAndRespond(string $entityClass, string $entityId): FormattedApiResponseInterface;
 
@@ -61,7 +61,7 @@ interface ControllerInterface
      *
      * @return \EoneoPay\External\ORM\Interfaces\EntityInterface
      *
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function retrieveEntity(string $entityClass, string $entityId): EntityInterface;
 
@@ -81,7 +81,7 @@ interface ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\Framework\Interfaces\EntityNotFoundExceptionInterface
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function updateEntityAndRespond(
         string $entityClass,
