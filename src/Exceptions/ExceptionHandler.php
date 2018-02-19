@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Traits\LaravelResponseTrait;
-use EoneoPay\ApiFormats\External\Interfaces\Psr7FactoryInterface;
+use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderInterface;
 use EoneoPay\External\ORM\Exceptions\EntityValidationFailedException;
 use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\NotFoundException;
-use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\Interfaces\BaseExceptionInterface;
 use Exception;
 use Illuminate\Http\Request;
@@ -34,7 +33,7 @@ class ExceptionHandler extends Handler
     /**
      * Create a new exception handler and set classes which should be ignored.
      *
-     * @param \EoneoPay\ApiFormats\External\Interfaces\Psr7FactoryInterface $psr7Factory
+     * @param \EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface $psr7Factory
      * @param \EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface $encoderGuesser
      */
     public function __construct(Psr7FactoryInterface $psr7Factory, RequestEncoderGuesserInterface $encoderGuesser)
@@ -57,7 +56,6 @@ class ExceptionHandler extends Handler
         $this->encoder = $this->getEncoder($request);
 
         if ($exception instanceof NotFoundException) {
-            /** @var RuntimeException $exception */
             return $this->entityNotFoundResponse($exception);
         }
 
