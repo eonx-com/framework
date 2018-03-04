@@ -6,18 +6,21 @@
     "type": "project",
     "require": {
         "php": ">=7.1",
-        "laravel/lumen-framework": "5.5.*",
-        "roave/security-advisories": "dev-master",
         "eoneopay/utils": "dev-master",
         "eoneopay/api-formats": "dev-master",
-        "eoneopay/external": "dev-master"
+        "eoneopay/external": "dev-master",
+        "laravel/lumen-framework": "5.5.*",
+        "laravel-doctrine/orm": "^1.4",
+        "roave/security-advisories": "dev-master",
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
         "vlucas/phpdotenv": "~2.2"
     },
     "autoload": {
-        "psr-4": { "EoneoPay\\Framework\\": "src/" }
+        "psr-4": {
+            "EoneoPay\\Framework\\": "src/"
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
