@@ -11,7 +11,7 @@
         "eoneopay/external": "dev-master",
         "laravel/lumen-framework": "5.5.*",
         "laravel-doctrine/orm": "^1.4",
-        "roave/security-advisories": "dev-master",
+        "roave/security-advisories": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
