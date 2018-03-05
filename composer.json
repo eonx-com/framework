@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": ">=7.1",
-        "eoneopay/utils": "dev-master",
         "eoneopay/api-formats": "dev-master",
         "eoneopay/external": "dev-master",
+        "eoneopay/utils": "dev-master",
         "laravel/lumen-framework": "5.5.*",
         "laravel-doctrine/orm": "^1.4",
         "roave/security-advisories": "dev-master"
