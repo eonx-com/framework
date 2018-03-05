@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Providers\ApiFormatsServiceProvider;
+use EoneoPay\External\Bridge\Laravel\Providers\OrmServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\ORM\DoctrineServiceProvider;
 
@@ -21,5 +22,8 @@ class FrameworkServiceProvider extends ServiceProvider
 
         // Enable database interaction - required by base controller
         $this->app->register(DoctrineServiceProvider::class);
+
+        // Add bridge to doctrine - required by base controller
+        $this->app->register(OrmServiceProvider::class);
     }
 }
