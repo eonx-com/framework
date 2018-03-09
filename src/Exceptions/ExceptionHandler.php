@@ -7,9 +7,9 @@ use EoneoPay\ApiFormats\Bridge\Laravel\Traits\LaravelResponseTrait;
 use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderInterface;
-use EoneoPay\External\ORM\Exceptions\EntityValidationFailedException;
 use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\NotFoundException;
+use EoneoPay\Utils\Exceptions\ValidationException;
 use EoneoPay\Utils\Interfaces\BaseExceptionInterface;
 use Exception;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class ExceptionHandler extends Handler
         $this->encoderGuesser = $encoderGuesser;
     }
 
-    /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response when unsupported exceptions */
+    /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response when exception is unsupported */
     /**
      * @param \Illuminate\Http\Request $request
      * @param \Exception $exception
@@ -59,8 +59,8 @@ class ExceptionHandler extends Handler
             return $this->entityNotFoundResponse($exception);
         }
 
-        if ($exception instanceof EntityValidationFailedException) {
-            return $this->entityValidationExceptionResponse($exception);
+        if ($exception instanceof ValidationException) {
+            return $this->validationExceptionResponse($exception);
         }
 
         if ($exception instanceof CriticalException) {
@@ -105,26 +105,6 @@ class ExceptionHandler extends Handler
             'sub_code' => $exception->getErrorSubCode(),
             'time' => \time(),
             'message' => $exception->getMessage()
-        ], $exception->getStatusCode()));
-    }
-
-    /**
-     * Create response for entity validation exceptions.
-     *
-     * @param \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException $exception
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
-     */
-    protected function entityValidationExceptionResponse(EntityValidationFailedException $exception): Response
-    {
-        return $this->createLaravelResponseFromPsr($this->encoder->encode([
-            'code' => $exception->getErrorCode(),
-            'sub_code' => $exception->getErrorSubCode(),
-            'time' => \time(),
-            'message' => $exception->getMessage(),
-            'violations' => $exception->getErrors()
         ], $exception->getStatusCode()));
     }
 
@@ -176,5 +156,25 @@ class ExceptionHandler extends Handler
             'time' => \time(),
             'message' => $this->getExceptionMessage($exception, 'Something went wrong')
         ], BaseExceptionInterface::DEFAULT_STATUS_CODE_RUNTIME));
+    }
+
+    /**
+     * Create response for validation exceptions.
+     *
+     * @param \EoneoPay\Utils\Exceptions\ValidationException $exception
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
+     */
+    protected function validationExceptionResponse(ValidationException $exception): Response
+    {
+        return $this->createLaravelResponseFromPsr($this->encoder->encode([
+            'code' => $exception->getErrorCode(),
+            'sub_code' => $exception->getErrorSubCode(),
+            'time' => \time(),
+            'message' => $exception->getMessage(),
+            'violations' => $exception->getErrors()
+        ], $exception->getStatusCode()));
     }
 }
