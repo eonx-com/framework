@@ -42,7 +42,7 @@ class ExceptionHandler extends Handler
         $this->encoderGuesser = $encoderGuesser;
     }
 
-    /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response from API when unsupported exceptions */
+    /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response when unsupported exceptions */
     /**
      * @param \Illuminate\Http\Request $request
      * @param \Exception $exception

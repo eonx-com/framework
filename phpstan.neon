@@ -1,0 +1,3 @@
+parameters:
+    ignoreErrors:
+        - '#Parameter \#2 \$entityId of method EoneoPay\\Framework\\Http\\Controllers\\Controller::(delete|update)EntityAndRespond\(\) expects string, string\|null given.#'

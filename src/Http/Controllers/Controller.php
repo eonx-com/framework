@@ -36,7 +36,9 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
+     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
+     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
      */
     public function createEntityAndRespond(string $entityClass, Request $request): FormattedApiResponseInterface
     {
@@ -56,6 +58,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
+     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -91,6 +95,9 @@ abstract class Controller extends BaseController implements ControllerInterface
      * Remove entity from database.
      *
      * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     *
+     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
      */
     public function removeEntity(EntityInterface $entity): void
     {
@@ -128,6 +135,9 @@ abstract class Controller extends BaseController implements ControllerInterface
      * Save entity into database.
      *
      * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     *
+     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
      */
     public function saveEntity(EntityInterface $entity): void
     {
@@ -144,6 +154,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
+     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
