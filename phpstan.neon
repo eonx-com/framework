@@ -1,3 +1,4 @@
 parameters:
     ignoreErrors:
         - '#Parameter \#2 \$entityId of method EoneoPay\\Framework\\Http\\Controllers\\Controller::(delete|update)EntityAndRespond\(\) expects string, string\|null given.#'
+        - '#Parameter \#1 \$app of class EoneoPay\\Framework\\Providers\\FrameworkServiceProvider constructor expects Illuminate\\Contracts\\Foundation\\Application, Laravel\\Lumen\\Application given.#'
