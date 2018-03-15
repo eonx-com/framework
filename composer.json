@@ -9,7 +9,7 @@
         "eoneopay/api-formats": "dev-master",
         "eoneopay/external": "dev-master",
         "eoneopay/utils": "dev-master",
-        "laravel/lumen-framework": "5.5.*",
+        "laravel/lumen-framework": "^5.5",
         "laravel-doctrine/orm": "^1.4",
         "roave/security-advisories": "dev-master"
     },
@@ -24,7 +24,9 @@
         }
     },
     "autoload-dev": {
-        "psr-4": { "Tests\\EoneoPay\\Framework\\": "tests/" }
+        "psr-4": {
+          "Tests\\EoneoPay\\Framework\\": "tests/"
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
