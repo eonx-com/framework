@@ -16,7 +16,7 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * @var \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
      */
-    protected $entityManager;
+    private $entityManager;
 
     /**
      * Controller constructor.
@@ -26,6 +26,16 @@ abstract class Controller extends BaseController implements ControllerInterface
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * Get entity manager instance
+     *
+     * @return \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 
     /**
@@ -101,8 +111,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      */
     public function removeEntity(EntityInterface $entity): void
     {
-        $this->entityManager->remove($entity);
-        $this->entityManager->flush();
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
     }
 
     /** @noinspection PhpDocRedundantThrowsInspection Exception thrown dynamically */
@@ -118,7 +128,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      */
     public function retrieveEntity(string $entityClass, string $entityId): EntityInterface
     {
-        $entity = $this->entityManager->getRepository($entityClass)->find($entityId);
+        $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
         if (null === $entity) {
             /** @var \EoneoPay\Framework\Database\Entities\Entity $entity */
@@ -141,8 +151,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      */
     public function saveEntity(EntityInterface $entity): void
     {
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
     }
 
     /**
