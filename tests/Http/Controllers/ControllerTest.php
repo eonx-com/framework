@@ -27,6 +27,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $create = (new ControllerStub($this->getEntityManager()))
             ->createEntityAndRespond(EntityStub::class, new Request());
 
+        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $create);
         self::assertInstanceOf(EntityStub::class, $create->getContent());
         self::assertEquals(201, $create->getStatusCode());
@@ -51,6 +52,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller->saveEntity($entity);
         $remove = $controller->deleteEntityAndRespond(EntityStub::class, $entity->getEntityId());
 
+        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $remove);
         self::assertEquals([], $remove->getContent());
         self::assertEquals(203, $remove->getStatusCode());
@@ -91,6 +93,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller->saveEntity($entity);
         $update = $controller->updateEntityAndRespond(EntityStub::class, $entity->getEntityId(), new Request());
 
+        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $update);
         self::assertInstanceOf(EntityStub::class, $update->getContent());
         self::assertEquals(200, $update->getStatusCode());

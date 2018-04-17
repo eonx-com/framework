@@ -15,8 +15,6 @@ class FrameworkServiceProviderTest extends TestCase
      * Test provider register other packages service providers correctly.
      *
      * @return void
-     *
-     * @throws \Illuminate\Container\EntryNotFoundException
      */
     public function testRegister(): void
     {

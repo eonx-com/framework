@@ -9,7 +9,7 @@
   "type": "project",
   "require": {
     "php": ">=7.1",
-    "eoneopay/api-formats": "dev-master",
+    "eoneopay/apiformats": "dev-master",
     "eoneopay/external": "dev-master",
     "eoneopay/utils": "dev-master",
     "laravel/lumen-framework": "^5.5",

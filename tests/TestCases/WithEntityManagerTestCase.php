@@ -61,6 +61,7 @@ abstract class WithEntityManagerTestCase extends TestCase
             return $this->doctrine;
         }
 
+        /** @noinspection PhpDeprecationInspection Only used for test case */
         AnnotationRegistry::registerFile(\sprintf(
             '%s/../../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php',
             __DIR__
@@ -124,6 +125,7 @@ abstract class WithEntityManagerTestCase extends TestCase
      *
      * @return void
      *
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\Tools\ToolsException
      * @throws \Doctrine\Common\Annotations\AnnotationException
@@ -142,6 +144,7 @@ abstract class WithEntityManagerTestCase extends TestCase
      * @return void
      *
      * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      */
     protected function tearDown(): void

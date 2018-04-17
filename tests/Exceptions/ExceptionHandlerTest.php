@@ -34,6 +34,8 @@ class ExceptionHandlerTest extends TestCase
 
         foreach ($exceptions as $exception) {
             $response = $exceptionHandler->render(new Request(), $exception);
+
+            /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
             self::assertInstanceOf(Response::class, $response);
         }
     }
