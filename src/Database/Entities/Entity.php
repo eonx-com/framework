@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace EoneoPay\Framework\Database\Entities;
 
-use EoneoPay\External\ORM\Entity as ORMEntity;
+use EoneoPay\Externals\ORM\Entity as ORMEntity;
 use EoneoPay\Framework\Interfaces\EntityInterface;
 
 abstract class Entity extends ORMEntity implements EntityInterface

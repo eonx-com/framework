@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace EoneoPay\Framework\Interfaces;
 
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
-use EoneoPay\External\ORM\Interfaces\EntityInterface;
+use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
 use Illuminate\Http\Request;
 
 interface ControllerInterface
@@ -34,7 +34,7 @@ interface ControllerInterface
     /**
      * Create formatted api response for given entity.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface|array $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|array $entity
      * @param int|null $statusCode
      * @param array|null $headers
      *
@@ -49,7 +49,7 @@ interface ControllerInterface
     /**
      * Remove entity from database.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      */
     public function removeEntity(EntityInterface $entity): void;
 
@@ -59,7 +59,7 @@ interface ControllerInterface
      * @param string $entityClass
      * @param string $entityId
      *
-     * @return \EoneoPay\External\ORM\Interfaces\EntityInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -68,7 +68,7 @@ interface ControllerInterface
     /**
      * Save entity into database.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      */
     public function saveEntity(EntityInterface $entity): void;
 

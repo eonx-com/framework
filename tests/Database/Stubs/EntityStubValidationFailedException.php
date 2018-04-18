@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Database\Stubs;
 
-use EoneoPay\External\ORM\Exceptions\EntityValidationFailedException;
+use EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException;
 
 class EntityStubValidationFailedException extends EntityValidationFailedException
 {

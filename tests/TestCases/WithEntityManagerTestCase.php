@@ -12,8 +12,8 @@ use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 use Doctrine\ORM\EntityManagerInterface as DoctrineEntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\SchemaTool;
-use EoneoPay\External\ORM\EntityManager;
-use EoneoPay\External\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\ORM\EntityManager;
+use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to doctrine configuration
@@ -41,7 +41,7 @@ abstract class WithEntityManagerTestCase extends TestCase
     private $doctrine;
 
     /**
-     * @var \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
+     * @var \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
      */
     private $entityManager;
 
@@ -104,7 +104,7 @@ abstract class WithEntityManagerTestCase extends TestCase
     /**
      * Get entity manager.
      *
-     * @return \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\Common\Annotations\AnnotationException

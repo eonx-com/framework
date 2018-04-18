@@ -5,8 +5,8 @@ namespace EoneoPay\Framework\Http\Controllers;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Responses\FormattedApiResponse;
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
-use EoneoPay\External\ORM\Interfaces\EntityInterface;
-use EoneoPay\External\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
+use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 use EoneoPay\Framework\Interfaces\ControllerInterface;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -14,14 +14,14 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 abstract class Controller extends BaseController implements ControllerInterface
 {
     /**
-     * @var \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
+     * @var \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
      */
     private $entityManager;
 
     /**
      * Controller constructor.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityManagerInterface $entityManager
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -31,7 +31,7 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * Get entity manager instance
      *
-     * @return \EoneoPay\External\ORM\Interfaces\EntityManagerInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
      */
     protected function getEntityManager(): EntityManagerInterface
     {
@@ -46,9 +46,9 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
     public function createEntityAndRespond(string $entityClass, Request $request): FormattedApiResponseInterface
     {
@@ -68,8 +68,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -85,7 +85,7 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * Create formatted api response for given entity.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface|array $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|array $entity
      * @param int|null $statusCode
      * @param array|null $headers
      *
@@ -104,10 +104,10 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * Remove entity from database.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
     public function removeEntity(EntityInterface $entity): void
     {
@@ -122,7 +122,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param string $entityClass
      * @param string $entityId
      *
-     * @return \EoneoPay\External\ORM\Interfaces\EntityInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -144,10 +144,10 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * Save entity into database.
      *
-     * @param \EoneoPay\External\ORM\Interfaces\EntityInterface $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      */
     public function saveEntity(EntityInterface $entity): void
     {
@@ -164,8 +164,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */

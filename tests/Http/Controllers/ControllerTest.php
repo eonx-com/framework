@@ -19,8 +19,8 @@ class ControllerTest extends WithEntityManagerTestCase
      *
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
     public function testCreateEntity(): void
     {
@@ -40,8 +40,8 @@ class ControllerTest extends WithEntityManagerTestCase
      *
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function testRemoveEntity(): void
@@ -81,8 +81,8 @@ class ControllerTest extends WithEntityManagerTestCase
      *
      * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \Doctrine\ORM\ORMException
-     * @throws \EoneoPay\External\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\External\ORM\Exceptions\ORMException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
+     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
     public function testUpdateEntity(): void

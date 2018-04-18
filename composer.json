@@ -10,7 +10,7 @@
   "require": {
     "php": ">=7.1",
     "eoneopay/apiformats": "dev-master",
-    "eoneopay/external": "dev-master",
+    "eoneopay/externals": "dev-master",
     "eoneopay/utils": "dev-master",
     "laravel/lumen-framework": "^5.5",
     "laravel-doctrine/orm": "^1.4"

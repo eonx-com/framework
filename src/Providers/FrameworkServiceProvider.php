@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Providers\ApiFormatsServiceProvider;
-use EoneoPay\External\Bridge\Laravel\Providers\OrmServiceProvider;
+use EoneoPay\Externals\Bridge\Laravel\Providers\OrmServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\ORM\DoctrineServiceProvider;
 

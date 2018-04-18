@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
-use EoneoPay\External\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 use EoneoPay\Framework\Providers\FrameworkServiceProvider;
 use Laravel\Lumen\Application;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
