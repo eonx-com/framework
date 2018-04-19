@@ -5,8 +5,8 @@ namespace EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Traits\LaravelResponseTrait;
 use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
-use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
-use EoneoPay\ApiFormats\Interfaces\RequestEncoderInterface;
+use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
+use EoneoPay\ApiFormats\Interfaces\EncoderInterface;
 use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\NotFoundException;
 use EoneoPay\Utils\Exceptions\ValidationException;
@@ -21,12 +21,12 @@ class ExceptionHandler extends Handler
     use LaravelResponseTrait;
 
     /**
-     * @var RequestEncoderInterface
+     * @var \EoneoPay\ApiFormats\Interfaces\EncoderInterface
      */
     protected $encoder;
 
     /**
-     * @var \EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface
+     * @var \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface
      */
     private $encoderGuesser;
 
@@ -34,9 +34,9 @@ class ExceptionHandler extends Handler
      * Create a new exception handler and set classes which should be ignored.
      *
      * @param \EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface $psr7Factory
-     * @param \EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface $encoderGuesser
+     * @param \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface $encoderGuesser
      */
-    public function __construct(Psr7FactoryInterface $psr7Factory, RequestEncoderGuesserInterface $encoderGuesser)
+    public function __construct(Psr7FactoryInterface $psr7Factory, EncoderGuesserInterface $encoderGuesser)
     {
         $this->psr7Factory = $psr7Factory;
         $this->encoderGuesser = $encoderGuesser;
@@ -113,9 +113,9 @@ class ExceptionHandler extends Handler
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \EoneoPay\ApiFormats\Interfaces\RequestEncoderInterface
+     * @return \EoneoPay\ApiFormats\Interfaces\EncoderInterface
      */
-    protected function getEncoder(Request $request): RequestEncoderInterface
+    protected function getEncoder(Request $request): EncoderInterface
     {
         if (null !== $this->encoder) {
             return $this->encoder;

@@ -29,16 +29,6 @@ abstract class Controller extends BaseController implements ControllerInterface
     }
 
     /**
-     * Get entity manager instance
-     *
-     * @return \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
-     */
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->entityManager;
-    }
-
-    /**
      * Create entity and return formatted api response.
      *
      * @param string $entityClass
@@ -115,7 +105,6 @@ abstract class Controller extends BaseController implements ControllerInterface
         $this->getEntityManager()->flush();
     }
 
-    /** @noinspection PhpDocRedundantThrowsInspection Exception thrown dynamically */
     /**
      * Retrieve entity by id.
      *
@@ -140,6 +129,8 @@ abstract class Controller extends BaseController implements ControllerInterface
 
         return $entity;
     }
+
+    /** @noinspection PhpDocRedundantThrowsInspection Exception thrown dynamically */
 
     /**
      * Save entity into database.
@@ -181,5 +172,15 @@ abstract class Controller extends BaseController implements ControllerInterface
         $this->saveEntity($entity);
 
         return $this->formattedApiResponse($entity);
+    }
+
+    /**
+     * Get entity manager instance
+     *
+     * @return \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
+     */
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->entityManager;
     }
 }

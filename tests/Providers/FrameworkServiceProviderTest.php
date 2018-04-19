@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Providers;
 
-use EoneoPay\ApiFormats\Interfaces\RequestEncoderGuesserInterface;
+use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 use EoneoPay\Framework\Providers\FrameworkServiceProvider;
 use Laravel\Lumen\Application;
@@ -19,7 +19,7 @@ class FrameworkServiceProviderTest extends TestCase
     public function testRegister(): void
     {
         $tests = [
-            RequestEncoderGuesserInterface::class,
+            EncoderGuesserInterface::class,
             EntityManagerInterface::class
         ];
 

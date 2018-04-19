@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Exceptions;
 
+use EoneoPay\ApiFormats\EncoderGuesser;
 use EoneoPay\ApiFormats\External\Libraries\Psr7\Psr7Factory;
-use EoneoPay\ApiFormats\RequestEncoderGuesser;
 use EoneoPay\Framework\Exceptions\ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,7 +30,7 @@ class ExceptionHandlerTest extends TestCase
             new EntityStubValidationFailedException(null, null, null, []),
             new CriticalExceptionStub()
         ];
-        $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new RequestEncoderGuesser([]));
+        $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new EncoderGuesser([]));
 
         foreach ($exceptions as $exception) {
             $response = $exceptionHandler->render(new Request(), $exception);
