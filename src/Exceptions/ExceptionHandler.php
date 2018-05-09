@@ -117,7 +117,7 @@ class ExceptionHandler extends Handler
      */
     protected function getEncoder(Request $request): EncoderInterface
     {
-        if (null !== $this->encoder) {
+        if ($this->encoder !== null) {
             return $this->encoder;
         }
 

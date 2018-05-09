@@ -57,7 +57,7 @@ abstract class WithEntityManagerTestCase extends TestCase
      */
     protected function getDoctrineEntityManager(): DoctrineEntityManagerInterface
     {
-        if (null !== $this->doctrine) {
+        if ($this->doctrine !== null) {
             return $this->doctrine;
         }
 
@@ -111,7 +111,7 @@ abstract class WithEntityManagerTestCase extends TestCase
      */
     protected function getEntityManager(): EntityManagerInterface
     {
-        if (null !== $this->entityManager) {
+        if ($this->entityManager !== null) {
             return $this->entityManager;
         }
 

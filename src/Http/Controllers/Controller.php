@@ -119,7 +119,7 @@ abstract class Controller extends BaseController implements ControllerInterface
     {
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
-        if (null === $entity) {
+        if ($entity === null) {
             /** @var \EoneoPay\Framework\Database\Entities\Entity $entity */
             $entity = new $entityClass();
             $exceptionClass = $entity->getEntityNotFoundException();
