@@ -7,5 +7,5 @@ use EoneoPay\Utils\Exceptions\CriticalException;
 
 class CriticalExceptionStub extends CriticalException
 {
-    //
+
 }

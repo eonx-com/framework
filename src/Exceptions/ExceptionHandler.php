@@ -44,10 +44,7 @@ class ExceptionHandler extends Handler
 
     /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response when exception is unsupported */
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param \Exception $exception
-     *
-     * @return \Illuminate\Http\Response
+     * {@inheritdoc}
      *
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
      */

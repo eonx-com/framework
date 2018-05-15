@@ -34,9 +34,9 @@ interface ControllerInterface
     /**
      * Create formatted api response for given entity.
      *
-     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|array $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|string[]|array[] $entity
      * @param int|null $statusCode
-     * @param array|null $headers
+     * @param string[]|null $headers
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      */
