@@ -21,7 +21,7 @@ use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 abstract class WithEntityManagerTestCase extends TestCase
 {
     /**
-     * @var array
+     * @var string[]
      */
     public static $connection = [
         'driver' => 'pdo_sqlite',
@@ -29,7 +29,7 @@ abstract class WithEntityManagerTestCase extends TestCase
     ];
 
     /**
-     * @var array
+     * @var string[]
      */
     public static $paths = [
         __DIR__ . '/../Database/Stubs'

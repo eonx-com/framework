@@ -42,7 +42,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      */
     public function createEntityAndRespond(string $entityClass, Request $request): FormattedApiResponseInterface
     {
-        /** @var EntityInterface $entity */
+        /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
         $entity = new $entityClass($request->all());
 
         $this->saveEntity($entity);
@@ -75,9 +75,9 @@ abstract class Controller extends BaseController implements ControllerInterface
     /**
      * Create formatted api response for given entity.
      *
-     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|array $entity
+     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|mixed[] $entity
      * @param int|null $statusCode
-     * @param array|null $headers
+     * @param string[]|null $headers
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -165,7 +165,7 @@ abstract class Controller extends BaseController implements ControllerInterface
         string $entityId,
         Request $request
     ): FormattedApiResponseInterface {
-        /** @var EntityInterface $entity */
+        /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
         $entity = $this->retrieveEntity($entityClass, $entityId);
         $entity->fill($request->all());
 

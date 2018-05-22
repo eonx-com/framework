@@ -56,11 +56,11 @@ class VersionHelper implements VersionHelperInterface
     {
         $path = \sprintf('%s/app/Http/Routes/%s.php', $this->basePath, $this->version);
 
-        if (!\file_exists($path)) {
+        if (\file_exists($path) === false) {
             $path = \sprintf('%s/app/Http/Routes/%s.php', $this->basePath, $this->getLatestVersion());
         }
 
-        if (!\file_exists($path)) {
+        if (\file_exists($path) === false) {
             throw new UnsupportedVersionException(\sprintf(
                 'Version %s requested, fallback to %s but files does not exist',
                 $this->version,

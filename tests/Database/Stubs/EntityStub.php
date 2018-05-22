@@ -80,7 +80,7 @@ class EntityStub extends Entity
     /**
      * Serialize entity as an array
      *
-     * @return array
+     * @return string[]|int[]|array[]|bool[]
      */
     public function toArray(): array
     {
