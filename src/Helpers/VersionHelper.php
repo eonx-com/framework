@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace EoneoPay\Framework\Helpers;
 
+use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 use EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException;
 use EoneoPay\Framework\Helpers\Interfaces\VersionHelperInterface;
-use Illuminate\Http\Request;
 
 class VersionHelper implements VersionHelperInterface
 {
@@ -26,10 +26,10 @@ class VersionHelper implements VersionHelperInterface
     /**
      * VersionHelper constructor.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      * @param string $basePath
      */
-    public function __construct(Request $request, string $basePath)
+    public function __construct(RequestInterface $request, string $basePath)
     {
         $this->basePath = $basePath;
         $this->version = $this->guessVersionFromRequest($request);
@@ -84,13 +84,13 @@ class VersionHelper implements VersionHelperInterface
     /**
      * Guess version from request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      *
      * @return string
      */
-    private function guessVersionFromRequest(Request $request): string
+    private function guessVersionFromRequest(RequestInterface $request): string
     {
-        \preg_match('#vnd.eoneopay.(v\d+)\+#i', $request->headers->get('accept', ''), $matches);
+        \preg_match('#vnd.eoneopay.(v\d+)\+#i', $request->getHeader('accept', ''), $matches);
 
         $version = $matches[1] ?? $this->getLatestVersion();
 
