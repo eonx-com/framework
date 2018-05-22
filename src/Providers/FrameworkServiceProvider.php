@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Providers\ApiFormatsServiceProvider;
+use EoneoPay\Externals\Bridge\Laravel\Providers\EnvServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\OrmServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\RequestServiceProvider;
 use Illuminate\Support\ServiceProvider;
@@ -29,5 +30,8 @@ class FrameworkServiceProvider extends ServiceProvider
 
         // Add bridge for requests - required for most controller actions
         $this->app->register(RequestServiceProvider::class);
+
+        // Add env helper - required by kernel
+        $this->app->register(EnvServiceProvider::class);
     }
 }
