@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Helpers;
 
+use EoneoPay\Externals\Bridge\Laravel\Request;
 use EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException;
 use EoneoPay\Framework\Helpers\VersionHelper;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
 class VersionHelperTest extends TestCase
@@ -26,8 +27,8 @@ class VersionHelperTest extends TestCase
 
         foreach ($tests as $header => $version) {
             $expected = \sprintf('App\Http\Controllers\%s', $version);
-            $request = new Request();
-            $request->headers->set('accept', $header);
+            $request = new Request(new HttpRequest());
+            $request->setHeader('accept', $header);
 
             self::assertEquals($expected, (new VersionHelper($request, ''))->getControllersNamespace());
         }
@@ -44,7 +45,7 @@ class VersionHelperTest extends TestCase
     {
         $this->expectException(UnsupportedVersionException::class);
 
-        (new VersionHelper(new Request(), __DIR__))->getRoutesFileBasePath();
+        (new VersionHelper(new Request(new HttpRequest()), __DIR__))->getRoutesFileBasePath();
     }
 
     /**
@@ -57,8 +58,8 @@ class VersionHelperTest extends TestCase
     public function testGetRoutesFileBasePathSuccessfully(): void
     {
         $expected = \sprintf('%s/app/Http/Routes/V2.php', __DIR__);
-        $request = new Request();
-        $request->headers->set('accept', 'vnd.eoneopay.v2+');
+        $request = new Request(new HttpRequest());
+        $request->setHeader('accept', 'vnd.eoneopay.v2+');
 
         self::assertEquals($expected, (new VersionHelper($request, __DIR__))->getRoutesFileBasePath());
     }

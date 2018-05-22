@@ -7,8 +7,8 @@ use EoneoPay\ApiFormats\Bridge\Laravel\Responses\FormattedApiResponse;
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 use EoneoPay\Framework\Interfaces\ControllerInterface;
-use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 abstract class Controller extends BaseController implements ControllerInterface
@@ -32,7 +32,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * Create entity and return formatted api response.
      *
      * @param string $entityClass
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -40,10 +40,12 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
-    public function createEntityAndRespond(string $entityClass, Request $request): FormattedApiResponseInterface
-    {
+    public function createEntityAndRespond(
+        string $entityClass,
+        RequestInterface $request
+    ): FormattedApiResponseInterface {
         /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
-        $entity = new $entityClass($request->all());
+        $entity = new $entityClass($request->toArray());
 
         $this->saveEntity($entity);
 
@@ -124,6 +126,7 @@ abstract class Controller extends BaseController implements ControllerInterface
             $entity = new $entityClass();
             $exceptionClass = $entity->getEntityNotFoundException();
 
+            /** @var \EoneoPay\Utils\Exceptions\NotFoundException $exceptionClass */
             throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
@@ -151,7 +154,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -163,11 +166,11 @@ abstract class Controller extends BaseController implements ControllerInterface
     public function updateEntityAndRespond(
         string $entityClass,
         string $entityId,
-        Request $request
+        RequestInterface $request
     ): FormattedApiResponseInterface {
         /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
         $entity = $this->retrieveEntity($entityClass, $entityId);
-        $entity->fill($request->all());
+        $entity->fill($request->toArray());
 
         $this->saveEntity($entity);
 

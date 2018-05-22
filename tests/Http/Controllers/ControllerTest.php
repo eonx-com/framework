@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace Tests\EoneoPay\Framework\Http\Controllers;
 
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
-use Illuminate\Http\Request;
+use EoneoPay\Externals\Bridge\Laravel\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStub;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
 use Tests\EoneoPay\Framework\Http\Stubs\ControllerStub;
@@ -25,7 +26,7 @@ class ControllerTest extends WithEntityManagerTestCase
     public function testCreateEntity(): void
     {
         $create = (new ControllerStub($this->getEntityManager()))
-            ->createEntityAndRespond(EntityStub::class, new Request());
+            ->createEntityAndRespond(EntityStub::class, new Request(new HttpRequest()));
 
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $create);
@@ -91,7 +92,11 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller = new ControllerStub($this->getEntityManager());
 
         $controller->saveEntity($entity);
-        $update = $controller->updateEntityAndRespond(EntityStub::class, $entity->getEntityId(), new Request());
+        $update = $controller->updateEntityAndRespond(
+            EntityStub::class,
+            $entity->getEntityId(),
+            new Request(new HttpRequest())
+        );
 
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $update);

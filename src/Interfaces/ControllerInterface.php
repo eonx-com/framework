@@ -5,7 +5,7 @@ namespace EoneoPay\Framework\Interfaces;
 
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
-use Illuminate\Http\Request;
+use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 
 interface ControllerInterface
 {
@@ -13,11 +13,14 @@ interface ControllerInterface
      * Create entity and return formatted api response.
      *
      * @param string $entityClass
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      */
-    public function createEntityAndRespond(string $entityClass, Request $request): FormattedApiResponseInterface;
+    public function createEntityAndRespond(
+        string $entityClass,
+        RequestInterface $request
+    ): FormattedApiResponseInterface;
 
     /**
      * Delete entity and return formatted api response.
@@ -77,7 +80,7 @@ interface ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param \Illuminate\Http\Request $request
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -86,6 +89,6 @@ interface ControllerInterface
     public function updateEntityAndRespond(
         string $entityClass,
         string $entityId,
-        Request $request
+        RequestInterface $request
     ): FormattedApiResponseInterface;
 }
