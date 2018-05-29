@@ -4,7 +4,11 @@ declare(strict_types=1);
 namespace Tests\EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
+use EoneoPay\Externals\Environment\Interfaces\EnvInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\Request\Interfaces\RequestInterface;
+use EoneoPay\Externals\Translator\Interfaces\TranslatorInterface;
+use EoneoPay\Externals\Validator\Interfaces\ValidatorInterface;
 use EoneoPay\Framework\Providers\FrameworkServiceProvider;
 use Laravel\Lumen\Application;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
@@ -20,7 +24,11 @@ class FrameworkServiceProviderTest extends TestCase
     {
         $tests = [
             EncoderGuesserInterface::class,
-            EntityManagerInterface::class
+            EntityManagerInterface::class,
+            EnvInterface::class,
+            RequestInterface::class,
+            TranslatorInterface::class,
+            ValidatorInterface::class
         ];
 
         $application = new Application();

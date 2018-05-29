@@ -7,6 +7,7 @@ use EoneoPay\ApiFormats\Bridge\Laravel\Providers\ApiFormatsServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\EnvServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\OrmServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\RequestServiceProvider;
+use EoneoPay\Externals\Bridge\Laravel\Providers\TranslatorServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\ValidationServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\ORM\DoctrineServiceProvider;
@@ -36,6 +37,7 @@ class FrameworkServiceProvider extends ServiceProvider
         $this->app->register(EnvServiceProvider::class);
 
         // Validator - required by command
+        $this->app->register(TranslatorServiceProvider::class);
         $this->app->register(ValidationServiceProvider::class);
     }
 }
