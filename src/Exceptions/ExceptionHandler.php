@@ -81,7 +81,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
             'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
-            'time' => \time(),
+            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
             'message' => $this->getExceptionMessage($exception, 'Service is currently unavailable')
         ], 503));
     }
@@ -100,7 +100,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getErrorCode(),
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => \time(),
+            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
             'message' => $exception->getMessage()
         ], $exception->getStatusCode()));
     }
@@ -150,7 +150,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
             'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
-            'time' => \time(),
+            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
             'message' => $this->getExceptionMessage($exception, 'Something went wrong')
         ], BaseExceptionInterface::DEFAULT_STATUS_CODE_RUNTIME));
     }
@@ -169,7 +169,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getErrorCode(),
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => \time(),
+            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
             'message' => $exception->getMessage(),
             'violations' => $exception->getErrors()
         ], $exception->getStatusCode()));
