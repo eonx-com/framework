@@ -27,7 +27,7 @@ class ExceptionHandlerTest extends TestCase
         $exceptions = [
             new \Exception(),
             new EntityStubNotFoundException(),
-            new EntityStubValidationFailedException(null, null, null, []),
+            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
             new CriticalExceptionStub()
         ];
         $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new EncoderGuesser([]));
