@@ -81,7 +81,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
             'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
-            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
+            'time' => $this->getTimestamp(),
             'message' => $this->getExceptionMessage($exception, 'Service is currently unavailable')
         ], 503));
     }
@@ -100,7 +100,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getErrorCode(),
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
+            'time' => $this->getTimestamp(),
             'message' => $exception->getMessage()
         ], $exception->getStatusCode()));
     }
@@ -150,7 +150,7 @@ class ExceptionHandler extends Handler
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
             'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
-            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
+            'time' => $this->getTimestamp(),
             'message' => $this->getExceptionMessage($exception, 'Something went wrong')
         ], BaseExceptionInterface::DEFAULT_STATUS_CODE_RUNTIME));
     }
@@ -166,12 +166,28 @@ class ExceptionHandler extends Handler
      */
     protected function validationExceptionResponse(ValidationException $exception): Response
     {
-        return $this->createLaravelResponseFromPsr($this->encoder->encode([
+        $error = [
             'code' => $exception->getErrorCode(),
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => \gmdate('Y-m-d\TH:i:s\Z'),
-            'message' => $exception->getMessage(),
-            'violations' => $exception->getErrors()
-        ], $exception->getStatusCode()));
+            'time' => $this->getTimestamp(),
+            'message' => $exception->getMessage()
+        ];
+
+        // Only add violations if they exist
+        if (\count($exception->getErrors()) > 0) {
+            $error['violations'] = $exception->getErrors();
+        }
+
+        return $this->createLaravelResponseFromPsr($this->encoder->encode($error, $exception->getStatusCode()));
+    }
+
+    /**
+     * Get exception timestamp
+     *
+     * @return string
+     */
+    private function getTimestamp(): string
+    {
+        return \gmdate('Y-m-d\TH:i:s\Z');
     }
 }
