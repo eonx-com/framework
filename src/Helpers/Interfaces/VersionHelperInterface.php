@@ -20,6 +20,8 @@ interface VersionHelperInterface
      * Returns controllers namespace based on version from request.
      *
      * @return string
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException
      */
     public function getControllersNamespace(): string;
 
@@ -27,6 +29,8 @@ interface VersionHelperInterface
      * Returns routes file base path based on version from request.
      *
      * @return string
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException
      */
     public function getRoutesFileBasePath(): string;
 }

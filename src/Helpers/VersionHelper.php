@@ -107,6 +107,8 @@ class VersionHelper implements VersionHelperInterface
      */
     public function addApplication(string $name, string $host, $latestVersion = null): VersionHelperInterface
     {
+        $name = (new Str())->studly($name);
+
         // $host is the key to allow one application to support multi-hosts
         $this->hosts[$host] = $name;
         $this->versions[$name] = $latestVersion ?? 1;
@@ -136,11 +138,7 @@ class VersionHelper implements VersionHelperInterface
             return $namespace;
         }
 
-        return $this->controllerNamespace = \sprintf(
-            '%s\%s',
-            $namespace,
-            (new Str())->studly($this->getApplicationName())
-        );
+        return $this->controllerNamespace = \sprintf('%s\%s', $namespace, $this->getApplicationName());
     }
 
     /**
@@ -219,7 +217,7 @@ class VersionHelper implements VersionHelperInterface
             return $version;
         }
 
-        return \sprintf('%s/%s', $version, (new Str())->studly($application));
+        return \sprintf('%s/%s', $version, $application);
     }
 
     /**
