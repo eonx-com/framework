@@ -15,6 +15,8 @@ class VersionHelperTest extends TestCase
      * Test version helper returns right controllers namespace based on request accept header.
      *
      * @return void
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException
      */
     public function testGetControllersControllersNamespace(): void
     {
@@ -30,7 +32,11 @@ class VersionHelperTest extends TestCase
             $request = new Request(new HttpRequest());
             $request->setHeader('accept', $header);
 
-            self::assertEquals($expected, (new VersionHelper($request, ''))->getControllersNamespace());
+            $actual = (new VersionHelper('', $request))->getControllersNamespace();
+
+            \var_dump($actual);
+
+            self::assertEquals($expected, $actual);
         }
     }
 
@@ -45,7 +51,7 @@ class VersionHelperTest extends TestCase
     {
         $this->expectException(UnsupportedVersionException::class);
 
-        (new VersionHelper(new Request(new HttpRequest()), __DIR__))->getRoutesFileBasePath();
+        (new VersionHelper(__DIR__, new Request(new HttpRequest()), null, 4))->getRoutesFileBasePath();
     }
 
     /**
@@ -61,6 +67,6 @@ class VersionHelperTest extends TestCase
         $request = new Request(new HttpRequest());
         $request->setHeader('accept', 'vnd.eoneopay.v2+');
 
-        self::assertEquals($expected, (new VersionHelper($request, __DIR__))->getRoutesFileBasePath());
+        self::assertEquals($expected, (new VersionHelper(__DIR__, $request))->getRoutesFileBasePath());
     }
 }

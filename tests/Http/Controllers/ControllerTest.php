@@ -98,6 +98,11 @@ class ControllerTest extends WithEntityManagerTestCase
             new Request(new HttpRequest())
         );
 
+        $request = \Symfony\Component\HttpFoundation\Request::create('http://nathan.eoneopay');
+
+        \var_dump($request->getHost());
+        \var_dump($request->getHttpHost());
+
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $update);
         self::assertInstanceOf(EntityStub::class, $update->getContent());

@@ -10,6 +10,10 @@ use EoneoPay\Utils\Str;
 
 class VersionHelper implements VersionHelperInterface
 {
+    public const ENV_APP_LATEST_VERSION = 'APP_LATEST_VERSION';
+
+    public const ENV_APP_NAME = 'APP_NAME';
+
     /**
      * Application base path.
      *
@@ -18,75 +22,125 @@ class VersionHelper implements VersionHelperInterface
     private $basePath;
 
     /**
+     * @var string
+     */
+    private $controllerNamespace;
+
+    /**
+     * Default application name (used for mono-domain app).
+     *
+     * @var string
+     */
+    private $defaultApplication;
+
+    /**
+     * Default application version (used for mono-domain app).
+     *
+     * @var int
+     */
+    private $defaultVersion;
+
+    /**
+     * Mapping array for multi-domains application.
+     *
+     * @var string[]
+     */
+    private $hosts = [];
+
+    /**
+     * @var \EoneoPay\Externals\Request\Interfaces\RequestInterface
+     */
+    private $request;
+
+    /**
+     * Requested application name.
+     *
+     * @var null|string
+     */
+    private $requestApplication;
+
+    /**
      * Requested version.
      *
      * @var string
      */
-    private $version;
+    private $requestedVersion;
 
     /**
-     * Requested application.
-     *
-     * @var null|string
+     * @var string
      */
-    private $application;
+    private $routeFilePath;
+
+    /**
+     * @var int[]
+     */
+    private $versions = [];
 
     /**
      * VersionHelper constructor.
      *
-     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
      * @param string $basePath
+     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
+     * @param null|string $defaultApplication
+     * @param null|int|string $defaultVersion
      */
-    public function __construct(RequestInterface $request, string $basePath, ?array $domainRoutingConfig = null)
-    {
-        $this->basePath = $basePath;
-        $this->version = $this->guessVersionFromRequest($request);
-        $this->application = $this->getApplicationType($request, $domainRoutingConfig);
+    public function __construct(
+        string $basePath,
+        RequestInterface $request,
+        ?string $defaultApplication = null,
+        $defaultVersion = null
+    ) {
+        $this->basePath = \realpath($basePath);
+        $this->defaultApplication = $defaultApplication ?? 'eoneopay';
+        $this->defaultVersion = $this->formatVersion($defaultVersion ?? '1');
+        $this->request = $request;
     }
 
     /**
-     * Get application type based on the current hostname and provided configuration array.
+     * Add application.
      *
-     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     * @param string[] $domainRoutingConfig
+     * @param string $name The name of the application.
+     * @param string $host The HTTP host of the application.
+     * @param null|int|string $latestVersion The latest version of the application (default to 1).
      *
-     * @return string
+     * @return \EoneoPay\Framework\Helpers\Interfaces\VersionHelperInterface
      */
-    public function getApplicationType(RequestInterface $request, ?array $domainRoutingConfig = null): ?string
+    public function addApplication(string $name, string $host, $latestVersion = null): VersionHelperInterface
     {
-        if ($domainRoutingConfig === null) {
-            return null;
-        }
+        // $host is the key to allow one application to support multi-hosts
+        $this->hosts[$host] = $name;
+        $this->versions[$name] = $latestVersion ?? 1;
 
-        $host = $request->getHost();
-        if (\array_key_exists($request->getHost(), $domainRoutingConfig)) {
-            return (new Str())->studly($domainRoutingConfig[$request->getHost()]);
-        }
-        return null;
+        return $this;
     }
 
     /**
      * Returns controllers namespace based on version from request.
      *
      * @return string
+     *
+     * @throws \EoneoPay\Framework\Helpers\Exceptions\UnsupportedVersionException
      */
     public function getControllersNamespace(): string
     {
-        $namespace = \sprintf('App\Http\Controllers\%s', $this->version);
-        if ($this->application === null) {
+        if ($this->controllerNamespace !== null) {
+            return $this->controllerNamespace;
+        }
+
+        // Call routes file path generation to ensure consistency about unsupported versions
+        $this->getRoutesFileBasePath();
+
+        $namespace = \sprintf('App\Http\Controllers\%s', $this->guessVersionFromRequest());
+
+        if ($this->getApplicationName() === null) {
             return $namespace;
         }
-        return \sprintf('%s\%s', $namespace, $this->application);
-    }
 
-    private function getGeneratedPath(string $version, string $extra = null)
-    {
-        $path = $version;
-        if ($extra === null) {
-            return $path;
-        }
-
-        return sprintf('%s/%s', $version, $extra);
+        return $this->controllerNamespace = \sprintf(
+            '%s\%s',
+            $namespace,
+            (new Str())->studly($this->getApplicationName())
+        );
     }
 
     /**
@@ -98,21 +152,88 @@ class VersionHelper implements VersionHelperInterface
      */
     public function getRoutesFileBasePath(): string
     {
-        $path = \sprintf('%s/app/Http/Routes/%s.php', $this->basePath, $this->getGeneratedPath($this->version, $this->application));
-
-        if (\file_exists($path) === false) {
-            $path = \sprintf('%s/app/Http/Routes/%s.php', $this->basePath, $this->getGeneratedPath($this->getLatestVersion(), $this->application));
+        if ($this->routeFilePath !== null) {
+            return $this->routeFilePath;
         }
 
+        $application = $this->getApplicationName();
+        $pattern = '%s/app/Http/Routes/%s.php';
+        $version = $this->guessVersionFromRequest();
+
+        // Try path with requested version
+        $path = \sprintf(
+            $pattern,
+            $this->basePath,
+            $this->generateRouteFilePath($version, $application)
+        );
+
+        // If doesn't exist fallback to latest version
+        if (\file_exists($path) === false) {
+            $version = $this->getLatestVersion();
+
+            $path = \sprintf(
+                $pattern,
+                $this->basePath,
+                $this->generateRouteFilePath($version, $application)
+            );
+        }
+        // If still doesn't exist throw exception
         if (\file_exists($path) === false) {
             throw new UnsupportedVersionException(\sprintf(
                 'Version %s requested, fallback to %s but files does not exist',
-                $this->version,
+                $this->guessVersionFromRequest(),
                 $this->getLatestVersion()
             ));
         }
 
-        return $path;
+        // Set requested version to last value assigned to ensure consistency
+        // between controllers namespace and routes file
+        $this->requestedVersion = $version;
+
+        return $this->routeFilePath = $path;
+    }
+
+    /**
+     * Get formatted version string.
+     *
+     * @param int|string $version
+     *
+     * @return string
+     */
+    private function formatVersion($version): string
+    {
+        return \sprintf('V%s', $version);
+    }
+
+    /**
+     * Generate route file path for given version and application.
+     *
+     * @param string $version
+     * @param null|string $application
+     *
+     * @return string
+     */
+    private function generateRouteFilePath(string $version, ?string $application = null): string
+    {
+        if ($application === null) {
+            return $version;
+        }
+
+        return \sprintf('%s/%s', $version, (new Str())->studly($application));
+    }
+
+    /**
+     * Get application name based on configured hosts and current request.
+     *
+     * @return null|string
+     */
+    private function getApplicationName(): ?string
+    {
+        if ($this->requestApplication !== null) {
+            return $this->requestApplication;
+        }
+
+        return $this->requestApplication = $this->hosts[$this->request->getHost()] ?? null;
     }
 
     /**
@@ -122,22 +243,33 @@ class VersionHelper implements VersionHelperInterface
      */
     private function getLatestVersion(): string
     {
-        return \env('APP_LATEST_VERSION', 'V1');
+        if ($this->getApplicationName() === null || isset($this->versions[$this->getApplicationName()]) === false) {
+            return $this->defaultVersion;
+        }
+
+        return $this->formatVersion($this->versions[$this->getApplicationName()]);
     }
 
     /**
      * Guess version from request.
      *
-     * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     *
      * @return string
      */
-    private function guessVersionFromRequest(RequestInterface $request): string
+    private function guessVersionFromRequest(): string
     {
-        \preg_match('#vnd.eoneopay.(v\d+)\+#i', $request->getHeader('accept', ''), $matches);
+        if ($this->requestedVersion !== null) {
+            return $this->requestedVersion;
+        }
+
+        $pattern = \sprintf(
+            '#vnd.(?:%s).(v\d+)\+#i',
+            empty($this->hosts) === false ? \implode('|', \array_keys($this->hosts)) : $this->defaultApplication
+        );
+
+        \preg_match($pattern, $this->request->getHeader('accept', ''), $matches);
 
         $version = $matches[1] ?? $this->getLatestVersion();
 
-        return \mb_strtoupper($version);
+        return $this->requestedVersion = \mb_strtoupper($version);
     }
 }
