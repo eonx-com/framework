@@ -36,7 +36,7 @@ class VersionHelper implements VersionHelperInterface
     /**
      * Default application version (used for mono-domain app).
      *
-     * @var int
+     * @var int|string
      */
     private $defaultVersion;
 
@@ -72,7 +72,7 @@ class VersionHelper implements VersionHelperInterface
     private $routeFilePath;
 
     /**
-     * @var int[]
+     * @var int[]|string[]
      */
     private $versions = [];
 
@@ -135,7 +135,7 @@ class VersionHelper implements VersionHelperInterface
         $namespace = \sprintf('App\Http\Controllers\%s', $this->guessVersionFromRequest());
 
         if ($this->getApplicationName() === null) {
-            return $namespace;
+            return $this->controllerNamespace = $namespace;
         }
 
         return $this->controllerNamespace = \sprintf('%s\%s', $namespace, $this->getApplicationName());
@@ -178,7 +178,8 @@ class VersionHelper implements VersionHelperInterface
         // If still doesn't exist throw exception
         if (\file_exists($path) === false) {
             throw new UnsupportedVersionException(\sprintf(
-                'Version %s requested, fallback to %s but files does not exist',
+                'App[%s]: Version %s requested, fallback to %s but files does not exist',
+                $application ?? '<default>',
                 $this->guessVersionFromRequest(),
                 $this->getLatestVersion()
             ));
@@ -242,7 +243,7 @@ class VersionHelper implements VersionHelperInterface
     private function getLatestVersion(): string
     {
         if ($this->getApplicationName() === null || isset($this->versions[$this->getApplicationName()]) === false) {
-            return $this->defaultVersion;
+            return (string)$this->defaultVersion;
         }
 
         return $this->formatVersion($this->versions[$this->getApplicationName()]);
@@ -261,7 +262,7 @@ class VersionHelper implements VersionHelperInterface
 
         $pattern = \sprintf(
             '#vnd.(?:%s).(v\d+)\+#i',
-            empty($this->hosts) === false ? \implode('|', \array_keys($this->hosts)) : $this->defaultApplication
+            empty($this->hosts) === false ? \implode('|', \array_values($this->hosts)) : $this->defaultApplication
         );
 
         \preg_match($pattern, $this->request->getHeader('accept', ''), $matches);
