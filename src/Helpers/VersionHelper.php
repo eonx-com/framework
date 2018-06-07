@@ -260,15 +260,12 @@ class VersionHelper implements VersionHelperInterface
             return $this->requestedVersion;
         }
 
-        $pattern = \sprintf(
-            '#vnd.(?:%s).(v\d+)\+#i',
-            empty($this->hosts) === false ? \implode('|', \array_values($this->hosts)) : $this->defaultApplication
-        );
+        \preg_match('#\.v([\d]+)[\.\+]#i', $this->request->getHeader('accept', ''), $matches);
 
-        \preg_match($pattern, $this->request->getHeader('accept', ''), $matches);
+        if (isset($matches[1]) === false) {
+            return $this->getLatestVersion();
+        }
 
-        $version = $matches[1] ?? $this->getLatestVersion();
-
-        return $this->requestedVersion = \mb_strtoupper($version);
+        return $this->requestedVersion = $this->formatVersion($matches[1]);
     }
 }
