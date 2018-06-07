@@ -10,10 +10,6 @@ use EoneoPay\Utils\Str;
 
 class VersionHelper implements VersionHelperInterface
 {
-    public const ENV_APP_LATEST_VERSION = 'APP_LATEST_VERSION';
-
-    public const ENV_APP_NAME = 'APP_NAME';
-
     /**
      * Application base path.
      *
@@ -25,13 +21,6 @@ class VersionHelper implements VersionHelperInterface
      * @var string
      */
     private $controllerNamespace;
-
-    /**
-     * Default application name (used for mono-domain app).
-     *
-     * @var string
-     */
-    private $defaultApplication;
 
     /**
      * Default application version (used for mono-domain app).
@@ -81,17 +70,14 @@ class VersionHelper implements VersionHelperInterface
      *
      * @param string $basePath
      * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     * @param null|string $defaultApplication
      * @param null|int|string $defaultVersion
      */
     public function __construct(
         string $basePath,
         RequestInterface $request,
-        ?string $defaultApplication = null,
         $defaultVersion = null
     ) {
         $this->basePath = \realpath($basePath);
-        $this->defaultApplication = $defaultApplication ?? 'eoneopay';
         $this->defaultVersion = $this->formatVersion($defaultVersion ?? '1');
         $this->request = $request;
     }
