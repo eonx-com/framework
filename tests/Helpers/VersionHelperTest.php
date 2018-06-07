@@ -51,7 +51,7 @@ class VersionHelperTest extends TestCase
     {
         $this->expectException(UnsupportedVersionException::class);
 
-        (new VersionHelper(__DIR__, new Request(new HttpRequest()), null, 4))->getRoutesFileBasePath();
+        (new VersionHelper(__DIR__, new Request(new HttpRequest()), 4))->getRoutesFileBasePath();
     }
 
     /**
