@@ -5,6 +5,7 @@ namespace Tests\EoneoPay\Framework\Http\Controllers;
 
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\Bridge\Laravel\Request;
+use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStub;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
@@ -70,7 +71,7 @@ class ControllerTest extends WithEntityManagerTestCase
      */
     public function testRetrieveEntityWithNotFoundException(): void
     {
-        $this->expectException(EntityStubNotFoundException::class);
+        $this->expectException(EntityNotFoundException::class);
 
         (new ControllerStub($this->getEntityManager()))->retrieveEntity(EntityStub::class, 'invalid');
     }

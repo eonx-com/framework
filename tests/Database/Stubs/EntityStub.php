@@ -38,14 +38,6 @@ class EntityStub extends Entity
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getEntityNotFoundException(): string
-    {
-        return EntityStubNotFoundException::class;
-    }
-
-    /**
      * Get string.
      *
      * @return null|string
@@ -53,14 +45,6 @@ class EntityStub extends Entity
     public function getString(): ?string
     {
         return $this->string;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getValidationFailedException(): string
-    {
-        return EntityStubValidationFailedException::class;
     }
 
     /**

@@ -5,7 +5,9 @@ namespace Tests\EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\EncoderGuesser;
 use EoneoPay\ApiFormats\External\Libraries\Psr7\Psr7Factory;
+use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use EoneoPay\Framework\Exceptions\ExceptionHandler;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
@@ -25,10 +27,11 @@ class ExceptionHandlerTest extends TestCase
     public function testRender(): void
     {
         $exceptions = [
-            new \Exception(),
+            new CriticalExceptionStub(),
+            new Exception(),
+            new EntityNotFoundException(),
             new EntityStubNotFoundException(),
-            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
-            new CriticalExceptionStub()
+            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]])
         ];
         $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new EncoderGuesser([]));
 

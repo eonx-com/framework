@@ -8,6 +8,7 @@ use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 use EoneoPay\Externals\Request\Interfaces\RequestInterface;
+use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use EoneoPay\Framework\Interfaces\ControllerInterface;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -122,12 +123,7 @@ abstract class Controller extends BaseController implements ControllerInterface
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
         if ($entity === null) {
-            /** @var \EoneoPay\Framework\Database\Entities\Entity $entity */
-            $entity = new $entityClass();
-            $exceptionClass = $entity->getEntityNotFoundException();
-
-            /** @var \EoneoPay\Utils\Exceptions\NotFoundException $exceptionClass */
-            throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
+            throw new EntityNotFoundException(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
         return $entity;
