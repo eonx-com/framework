@@ -10,11 +10,15 @@ use EoneoPay\Framework\Exceptions\ExceptionHandler;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubValidationFailedException;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to all eventual exceptions to handle
+ */
 class ExceptionHandlerTest extends TestCase
 {
     /**
@@ -31,7 +35,8 @@ class ExceptionHandlerTest extends TestCase
             new Exception(),
             new EntityNotFoundException(),
             new EntityStubNotFoundException(),
-            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]])
+            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
+            new NotFoundHttpException()
         ];
         $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new EncoderGuesser([]));
 

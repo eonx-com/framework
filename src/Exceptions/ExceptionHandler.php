@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Exceptions\Handler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionHandler extends Handler
 {
@@ -51,6 +52,10 @@ class ExceptionHandler extends Handler
     public function render($request, Exception $exception): Response
     {
         $this->encoder = $this->getEncoder($request);
+
+        if ($exception instanceof NotFoundHttpException) {
+            return $this->httpNotFoundResponse($exception);
+        }
 
         if ($exception instanceof NotFoundException) {
             return $this->entityNotFoundResponse($exception);
@@ -134,6 +139,25 @@ class ExceptionHandler extends Handler
     protected function getExceptionMessage(Exception $exception, string $default): string
     {
         return \env('APP_ENV') !== 'production' ? $exception->getMessage() : $default;
+    }
+
+    /**
+     * Create response for HTTP not found exceptions.
+     *
+     * @param \Symfony\Component\HttpKernel\Exception\NotFoundHttpException $exception
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
+     */
+    protected function httpNotFoundResponse(NotFoundHttpException $exception): Response
+    {
+        return $this->createLaravelResponseFromPsr($this->encoder->encode([
+            'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_NOT_FOUND,
+            'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
+            'time' => $this->getTimestamp(),
+            'message' => $this->getExceptionMessage($exception, 'Not found')
+        ], 404));
     }
 
     /**
