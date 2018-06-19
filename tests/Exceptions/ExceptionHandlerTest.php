@@ -41,6 +41,10 @@ class ExceptionHandlerTest extends TestCase
         $exceptionHandler = new ExceptionHandler(new Psr7Factory(), new EncoderGuesser([]));
 
         foreach ($exceptions as $exception) {
+            if ($exception instanceof NotFoundHttpException) {
+                \putenv('APP_ENV=production');
+            }
+
             $response = $exceptionHandler->render(new Request(), $exception);
 
             /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
