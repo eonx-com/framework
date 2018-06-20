@@ -9,6 +9,9 @@ use EoneoPay\Externals\Bridge\Laravel\Providers\OrmServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\RequestServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\TranslatorServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\ValidationServiceProvider;
+use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
+use EoneoPay\Externals\Logger\Logger;
+use EoneoPay\Utils\Bridge\Lumen\Providers\ConfigurationServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\ORM\DoctrineServiceProvider;
 
@@ -21,11 +24,17 @@ class FrameworkServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Ensures formats can be read/write based on header, required by base controller
+        // Ensures formats can be read/write based on header - required by base controller
         $this->app->register(ApiFormatsServiceProvider::class);
+
+        // Add configurations automatically - required by bootstrap
+        $this->app->register(ConfigurationServiceProvider::class);
 
         // Enable database interaction - required by base controller
         $this->app->register(DoctrineServiceProvider::class);
+
+        // Logger interface - required by exception handler
+        $this->app->bind(LoggerInterface::class, Logger::class);
 
         // Add bridge to doctrine - required by base controller
         $this->app->register(OrmServiceProvider::class);

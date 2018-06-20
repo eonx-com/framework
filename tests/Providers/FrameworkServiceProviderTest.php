@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Providers;
 
+use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
 use EoneoPay\Externals\Environment\Interfaces\EnvInterface;
+use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
 use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 use EoneoPay\Externals\Translator\Interfaces\TranslatorInterface;
@@ -26,6 +28,8 @@ class FrameworkServiceProviderTest extends TestCase
             EncoderGuesserInterface::class,
             EntityManagerInterface::class,
             EnvInterface::class,
+            LoggerInterface::class,
+            Psr7FactoryInterface::class,
             RequestInterface::class,
             TranslatorInterface::class,
             ValidatorInterface::class
