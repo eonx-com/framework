@@ -55,7 +55,6 @@ class ExceptionHandlerTest extends TestCase
             new EntityStubNotFoundException(),
             new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
             new NotFoundHttpException(),
-            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
             new RuntimeExceptionStub()
         ];
 
@@ -74,6 +73,10 @@ class ExceptionHandlerTest extends TestCase
         $exceptionHandler = $this->createExceptionHandler();
 
         foreach ($this->exceptions as $exception) {
+            if ($exception instanceof NotFoundHttpException) {
+                \putenv('APP_ENV=production');
+            }
+
             $response = $exceptionHandler->render(new Request(), $exception);
 
             /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
