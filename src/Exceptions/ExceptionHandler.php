@@ -7,8 +7,10 @@ use EoneoPay\ApiFormats\Bridge\Laravel\Traits\LaravelResponseTrait;
 use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderInterface;
+use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
 use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\NotFoundException;
+use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\Exceptions\ValidationException;
 use EoneoPay\Utils\Interfaces\BaseExceptionInterface;
 use Exception;
@@ -17,33 +19,52 @@ use Illuminate\Http\Response;
 use Laravel\Lumen\Exceptions\Handler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) High coupling to filter exceptions
+ */
 class ExceptionHandler extends Handler
 {
     use LaravelResponseTrait;
 
     /**
+     * Encoder instance
+     *
      * @var \EoneoPay\ApiFormats\Interfaces\EncoderInterface
      */
     protected $encoder;
 
     /**
+     * PSR7 factory instance
+     *
      * @var \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface
      */
     private $encoderGuesser;
 
     /**
+     * Logger instance
+     *
+     * @var \EoneoPay\Externals\Logger\Interfaces\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Create a new exception handler and set classes which should be ignored.
      *
-     * @param \EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface $psr7Factory
-     * @param \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface $encoderGuesser
+     * @param \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface $encoderGuesser Encoder guesser instance
+     * @param \EoneoPay\Externals\Logger\Interfaces\LoggerInterface $logger Logger instance
+     * @param \EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface $psr7Factory PSR7 factory
      */
-    public function __construct(Psr7FactoryInterface $psr7Factory, EncoderGuesserInterface $encoderGuesser)
-    {
-        $this->psr7Factory = $psr7Factory;
+    public function __construct(
+        EncoderGuesserInterface $encoderGuesser,
+        LoggerInterface $logger,
+        Psr7FactoryInterface $psr7Factory
+    ) {
         $this->encoderGuesser = $encoderGuesser;
+        $this->logger = $logger;
+        $this->psr7Factory = $psr7Factory;
     }
 
-    /* @noinspection PhpMissingParentCallCommonInspection Avoid non-formatted response when exception is unsupported */
+    /** @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called */
     /**
      * {@inheritdoc}
      *
@@ -70,6 +91,27 @@ class ExceptionHandler extends Handler
         }
 
         return $this->unsupportedExceptionResponse($exception);
+    }
+
+    /** @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called */
+    /**
+     * {@inheritdoc}
+     */
+    public function report(Exception $exception): void
+    {
+        if ($exception instanceof RuntimeException) {
+            $this->logger->exception($exception, 'error');
+
+            return;
+        }
+
+        if ($exception instanceof CriticalException) {
+            $this->logger->exception($exception, 'critical');
+
+            return;
+        }
+
+        $this->logger->exception($exception);
     }
 
     /**
