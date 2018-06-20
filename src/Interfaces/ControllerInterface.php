@@ -61,12 +61,17 @@ interface ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
+     * @param null|string $notFoundException
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
-    public function retrieveEntity(string $entityClass, string $entityId): EntityInterface;
+    public function retrieveEntity(
+        string $entityClass,
+        string $entityId,
+        ?string $notFoundException = null
+    ): EntityInterface;
 
     /**
      * Save entity into database.

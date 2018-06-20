@@ -108,22 +108,29 @@ abstract class Controller extends BaseController implements ControllerInterface
         $this->getEntityManager()->flush();
     }
 
+    /** @noinspection PhpDocRedundantThrowsInspection Thrown dynamically */
     /**
      * Retrieve entity by id.
      *
      * @param string $entityClass
      * @param string $entityId
+     * @param null|string $notFoundException
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
-    public function retrieveEntity(string $entityClass, string $entityId): EntityInterface
-    {
+    public function retrieveEntity(
+        string $entityClass,
+        string $entityId,
+        ?string $notFoundException = null
+    ): EntityInterface {
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
         if ($entity === null) {
-            throw new EntityNotFoundException(\sprintf('%s %s not found', $entityClass, $entityId));
+            $exceptionClass = $notFoundException ?? EntityNotFoundException::class;
+
+            throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
         return $entity;
