@@ -58,6 +58,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
+     * @param null|string $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -66,9 +67,12 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
-    public function deleteEntityAndRespond(string $entityClass, string $entityId): FormattedApiResponseInterface
-    {
-        $entity = $this->retrieveEntity($entityClass, $entityId);
+    public function deleteEntityAndRespond(
+        string $entityClass,
+        string $entityId,
+        ?string $notFoundException = null
+    ): FormattedApiResponseInterface {
+        $entity = $this->retrieveEntity($entityClass, $entityId, $notFoundException);
 
         $this->removeEntity($entity);
 
@@ -108,22 +112,29 @@ abstract class Controller extends BaseController implements ControllerInterface
         $this->getEntityManager()->flush();
     }
 
+    /** @noinspection PhpDocRedundantThrowsInspection Thrown dynamically */
     /**
      * Retrieve entity by id.
      *
      * @param string $entityClass
      * @param string $entityId
+     * @param null|string $notFoundException
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
-    public function retrieveEntity(string $entityClass, string $entityId): EntityInterface
-    {
+    public function retrieveEntity(
+        string $entityClass,
+        string $entityId,
+        ?string $notFoundException = null
+    ): EntityInterface {
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
         if ($entity === null) {
-            throw new EntityNotFoundException(\sprintf('%s %s not found', $entityClass, $entityId));
+            $exceptionClass = $notFoundException ?? EntityNotFoundException::class;
+
+            throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
         return $entity;
@@ -151,6 +162,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param string $entityClass
      * @param string $entityId
      * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
+     * @param null|string $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -162,10 +174,11 @@ abstract class Controller extends BaseController implements ControllerInterface
     public function updateEntityAndRespond(
         string $entityClass,
         string $entityId,
-        RequestInterface $request
+        RequestInterface $request,
+        ?string $notFoundException = null
     ): FormattedApiResponseInterface {
         /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
-        $entity = $this->retrieveEntity($entityClass, $entityId);
+        $entity = $this->retrieveEntity($entityClass, $entityId, $notFoundException);
         $entity->fill($request->toArray());
 
         $this->saveEntity($entity);

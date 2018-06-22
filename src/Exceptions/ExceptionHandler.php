@@ -184,7 +184,11 @@ class ExceptionHandler extends Handler
      */
     protected function getExceptionMessage(Exception $exception, string $default): string
     {
-        return \env('APP_ENV') !== 'production' ? $exception->getMessage() : $default;
+        if (\env('APP_ENV') !== 'production') {
+            return empty($exception->getMessage()) === false ? $exception->getMessage() : $default;
+        }
+
+        return $default;
     }
 
     /**

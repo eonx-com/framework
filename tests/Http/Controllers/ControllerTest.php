@@ -8,10 +8,13 @@ use EoneoPay\Externals\Bridge\Laravel\Request;
 use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStub;
-use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
+use Tests\EoneoPay\Framework\Exceptions\Stubs\CustomNotFoundExceptionStub;
 use Tests\EoneoPay\Framework\Http\Stubs\ControllerStub;
 use Tests\EoneoPay\Framework\TestCases\WithEntityManagerTestCase;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to flexibility of the base controller
+ */
 class ControllerTest extends WithEntityManagerTestCase
 {
     /**
@@ -58,6 +61,26 @@ class ControllerTest extends WithEntityManagerTestCase
         self::assertInstanceOf(FormattedApiResponseInterface::class, $remove);
         self::assertEquals([], $remove->getContent());
         self::assertEquals(203, $remove->getStatusCode());
+    }
+
+    /**
+     * Test controller throw custom not found exception when entity does not exist.
+     *
+     * @return void
+     *
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \EoneoPay\Utils\Exceptions\NotFoundException
+     */
+    public function testRetrieveEntityWithCustomNotFoundException(): void
+    {
+        $this->expectException(CustomNotFoundExceptionStub::class);
+
+        (new ControllerStub($this->getEntityManager()))->retrieveEntity(
+            EntityStub::class,
+            'invalid',
+            CustomNotFoundExceptionStub::class
+        );
     }
 
     /**
