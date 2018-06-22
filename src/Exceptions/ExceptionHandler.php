@@ -96,22 +96,26 @@ class ExceptionHandler extends Handler
     /** @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called */
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception If internal logger can't be instantiated from container
      */
     public function report(Exception $exception): void
     {
+        // Log all exceptions with notice log level
+        $this->logger->exception($exception);
+
+        // If exception is runtime bump up to error
         if ($exception instanceof RuntimeException) {
             $this->logger->exception($exception, 'error');
-
-            return;
         }
 
+        // If exception is critical bump up to critical
         if ($exception instanceof CriticalException) {
             $this->logger->exception($exception, 'critical');
-
-            return;
         }
 
-        $this->logger->exception($exception);
+        // Throw exception for the lumen handler
+        throw $exception;
     }
 
     /**

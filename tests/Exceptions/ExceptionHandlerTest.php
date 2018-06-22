@@ -93,7 +93,11 @@ class ExceptionHandlerTest extends TestCase
         $exceptionHandler = $this->createExceptionHandler();
 
         foreach ($this->exceptions as $exception) {
-            $exceptionHandler->report($exception);
+            try {
+                $exceptionHandler->report($exception);
+            } /** @noinspection BadExceptionsProcessingInspection */ catch (Exception $exception) {
+                // Report will re-throw exception, ignore
+            }
 
             // Check logger
             if ($exception instanceof CriticalException) {
