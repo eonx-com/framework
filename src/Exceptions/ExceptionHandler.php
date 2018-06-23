@@ -93,7 +93,6 @@ class ExceptionHandler extends Handler
         return $this->unsupportedExceptionResponse($exception);
     }
 
-    /** @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called */
     /**
      * {@inheritdoc}
      *
@@ -115,7 +114,7 @@ class ExceptionHandler extends Handler
         }
 
         // Throw exception for the lumen handler
-        throw $exception;
+        parent::report($exception);
     }
 
     /**
