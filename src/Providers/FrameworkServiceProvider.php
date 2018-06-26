@@ -5,6 +5,7 @@ namespace EoneoPay\Framework\Providers;
 
 use EoneoPay\ApiFormats\Bridge\Laravel\Providers\ApiFormatsServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\EnvServiceProvider;
+use EoneoPay\Externals\Bridge\Laravel\Providers\FilesystemServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\OrmServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\RequestServiceProvider;
 use EoneoPay\Externals\Bridge\Laravel\Providers\TranslatorServiceProvider;
@@ -32,6 +33,9 @@ class FrameworkServiceProvider extends ServiceProvider
 
         // Enable database interaction - required by base controller
         $this->app->register(DoctrineServiceProvider::class);
+
+        // Enable filesystem - required by health check, must be loaded after configuration
+        $this->app->register(FilesystemServiceProvider::class);
 
         // Logger interface - required by exception handler
         $this->app->bind(LoggerInterface::class, Logger::class);
