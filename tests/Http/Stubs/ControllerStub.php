@@ -7,5 +7,4 @@ use EoneoPay\Framework\Http\Controllers\Controller;
 
 class ControllerStub extends Controller
 {
-
 }

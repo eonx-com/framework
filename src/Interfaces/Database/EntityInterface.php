@@ -5,5 +5,4 @@ namespace EoneoPay\Framework\Interfaces\Database;
 
 interface EntityInterface
 {
-
 }

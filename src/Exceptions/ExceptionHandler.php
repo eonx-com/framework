@@ -120,19 +120,19 @@ class ExceptionHandler extends Handler
     /**
      * Create response for critical exceptions.
      *
-     * @param \Exception $exception
+     * @param \EoneoPay\Utils\Exceptions\CriticalException $exception
      *
      * @return \Illuminate\Http\Response
      *
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
      */
-    protected function criticalExceptionResponse(Exception $exception): Response
+    protected function criticalExceptionResponse(CriticalException $exception): Response
     {
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
             'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
             'time' => $this->getTimestamp(),
-            'message' => $this->getExceptionMessage($exception, 'Service is currently unavailable')
+            'message' => $this->getExceptionMessage($exception, $exception->getErrorMessage())
         ], 503));
     }
 
