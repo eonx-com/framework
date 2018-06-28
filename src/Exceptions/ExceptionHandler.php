@@ -129,8 +129,8 @@ class ExceptionHandler extends Handler
     protected function criticalExceptionResponse(CriticalException $exception): Response
     {
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
-            'code' => BaseExceptionInterface::DEFAULT_ERROR_CODE_RUNTIME,
-            'sub_code' => BaseExceptionInterface::DEFAULT_ERROR_SUB_CODE,
+            'code' => $exception->getErrorCode(),
+            'sub_code' => $exception->getErrorSubCode(),
             'time' => $this->getTimestamp(),
             'message' => $this->getExceptionMessage($exception, $exception->getErrorMessage())
         ], 503));
