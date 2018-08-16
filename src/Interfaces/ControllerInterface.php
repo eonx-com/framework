@@ -40,16 +40,16 @@ interface ControllerInterface
     ): FormattedApiResponseInterface;
 
     /**
-     * Create formatted api response for given entity.
+     * Create formatted api response for given content.
      *
-     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|string[]|array[] $entity
+     * @param \EoneoPay\Utils\Interfaces\SerializableInterface|mixed[] $content
      * @param int|null $statusCode
      * @param string[]|null $headers
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      */
     public function formattedApiResponse(
-        $entity,
+        $content,
         ?int $statusCode = null,
         ?array $headers = null
     ): FormattedApiResponseInterface;
@@ -58,6 +58,8 @@ interface ControllerInterface
      * Remove entity from database.
      *
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+     *
+     * @return void
      */
     public function removeEntity(EntityInterface $entity): void;
 
@@ -82,6 +84,8 @@ interface ControllerInterface
      * Save entity into database.
      *
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+     *
+     * @return void
      */
     public function saveEntity(EntityInterface $entity): void;
 
