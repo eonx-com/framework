@@ -80,9 +80,9 @@ abstract class Controller extends BaseController implements ControllerInterface
     }
 
     /**
-     * Create formatted api response for given entity.
+     * Create formatted api response for given content.
      *
-     * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface|mixed[] $entity
+     * @param \EoneoPay\Utils\Interfaces\SerializableInterface|mixed[] $content
      * @param int|null $statusCode
      * @param string[]|null $headers
      *
@@ -91,17 +91,19 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @throws \InvalidArgumentException
      */
     public function formattedApiResponse(
-        $entity,
+        $content,
         ?int $statusCode = null,
         ?array $headers = null
     ): FormattedApiResponseInterface {
-        return new FormattedApiResponse($entity, $statusCode ?? 200, $headers ?? []);
+        return new FormattedApiResponse($content, $statusCode ?? 200, $headers ?? []);
     }
 
     /**
      * Remove entity from database.
      *
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+     *
+     * @return void
      *
      * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
@@ -146,6 +148,8 @@ abstract class Controller extends BaseController implements ControllerInterface
      * Save entity into database.
      *
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+     *
+     * @return void
      *
      * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
