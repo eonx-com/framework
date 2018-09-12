@@ -14,8 +14,13 @@ use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
 use EoneoPay\Externals\Logger\Logger;
 use EoneoPay\Utils\Bridge\Lumen\Providers\ConfigurationServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\PresenceVerifierInterface;
 use LaravelDoctrine\ORM\DoctrineServiceProvider;
+use LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) High coupling required to bind all framework services
+ */
 class FrameworkServiceProvider extends ServiceProvider
 {
     /**
@@ -51,6 +56,7 @@ class FrameworkServiceProvider extends ServiceProvider
 
         // Validator - required by command
         $this->app->register(TranslatorServiceProvider::class);
+        $this->app->bind(PresenceVerifierInterface::class, DoctrinePresenceVerifier::class);
         $this->app->register(ValidationServiceProvider::class);
     }
 }
