@@ -5,22 +5,31 @@ namespace Tests\EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\EncoderGuesser;
 use EoneoPay\ApiFormats\External\Libraries\Psr7\Psr7Factory;
+use EoneoPay\Externals\Bridge\Laravel\Translator;
+use EoneoPay\Externals\Environment\Env;
 use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use EoneoPay\Framework\Exceptions\ExceptionHandler;
 use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\RuntimeException;
 use Exception;
+use Illuminate\Filesystem\Filesystem as ContractedFilesystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\Translator as ContractedTranslator;
+use stdClass;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubValidationFailedException;
+use Tests\EoneoPay\Framework\Exceptions\Stubs\ClientExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
 /**
+ * @noinspection EfferentObjectCouplingInspection High coupling required to full test handler
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to all eventual exceptions to handle
  */
 class ExceptionHandlerTest extends TestCase
@@ -66,21 +75,86 @@ class ExceptionHandlerTest extends TestCase
      *
      * @return void
      *
-     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
+     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
     public function testRender(): void
     {
         $exceptionHandler = $this->createExceptionHandler();
 
         foreach ($this->exceptions as $exception) {
-            if ($exception instanceof NotFoundHttpException) {
-                \putenv('APP_ENV=production');
-            }
-
             $response = $exceptionHandler->render(new Request(), $exception);
 
             /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
             self::assertInstanceOf(Response::class, $response);
+        }
+    }
+
+    /**
+     * Create exception handler instance
+     *
+     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
+     */
+    private function createExceptionHandler(): ExceptionHandler
+    {
+        return new ExceptionHandler(
+            new EncoderGuesser([]),
+            $this->logger,
+            new Psr7Factory(),
+            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
+        );
+    }
+
+    /**
+     * Test messages don't expose information in production
+     *
+     * @return void
+     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
+     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
+     */
+    public function testDefaultMessageUsedInProduction(): void
+    {
+        $exceptionHandler = $this->createExceptionHandler();
+        $request = new Request();
+        $exception = new RuntimeExceptionStub('Test message');
+
+        $content = \json_decode($exceptionHandler->render($request, $exception)->content()) ?: new stdClass();
+        self::assertSame('Test message', $content->message ?? 'error');
+
+        // Switch to production and test again
+        (new Env())->set('APP_ENV', 'production');
+
+        $content = \json_decode($exceptionHandler->render($request, $exception)->content()) ?: new stdClass();
+        self::assertSame('exceptions.messages.unknown', $content->message ?? 'error');
+    }
+
+    /**
+     * Test default messages for client exceptions
+     *
+     * @return void
+     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
+     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
+     */
+    public function testDefaultMessagesForClientExceptions(): void
+    {
+        $codes = [
+            400 => 'exceptions.messages.client_error',
+            401 => 'exceptions.messages.unauthorised',
+            403 => 'exceptions.messages.forbidden',
+            404 => 'exceptions.messages.not_found'
+        ];
+
+        $exceptionHandler = $this->createExceptionHandler();
+        $request = new Request();
+
+        foreach ($codes as $code => $message) {
+            $exception = new ClientExceptionStub();
+            $exception->setStatusCode($code);
+
+            $content = \json_decode($exceptionHandler->render($request, $exception)->content()) ?: new stdClass();
+            self::assertSame($message, $content->message ?? 'error');
         }
     }
 
@@ -116,15 +190,5 @@ class ExceptionHandlerTest extends TestCase
             /** @noinspection DisconnectedForeachInstructionInspection Fall through if type is unknown */
             self::assertSame('notice', $this->logger->getLogLevel());
         }
-    }
-
-    /**
-     * Create exception handler instance
-     *
-     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
-     */
-    private function createExceptionHandler(): ExceptionHandler
-    {
-        return new ExceptionHandler(new EncoderGuesser([]), $this->logger, new Psr7Factory());
     }
 }
