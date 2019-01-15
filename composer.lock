@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "805cd521681206e9af0d8bf056b9a6cc",
+    "content-hash": "36e8b105439f02df8161c230db1dd054",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -983,12 +983,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/loyaltycorp/externals.git",
-                "reference": "ebb3ce805528c0909c9f9550a1ce9dbf8a87db95"
+                "reference": "2e7f7c0c9bfe2b6eb6c932b1baf1ec7df8266505"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/ebb3ce805528c0909c9f9550a1ce9dbf8a87db95",
-                "reference": "ebb3ce805528c0909c9f9550a1ce9dbf8a87db95",
+                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/2e7f7c0c9bfe2b6eb6c932b1baf1ec7df8266505",
+                "reference": "2e7f7c0c9bfe2b6eb6c932b1baf1ec7df8266505",
                 "shasum": ""
             },
             "require": {
@@ -1044,7 +1044,7 @@
             "keywords": [
                 "external"
             ],
-            "time": "2018-11-28T00:49:37+00:00"
+            "time": "2019-01-14T22:23:58+00:00"
         },
         {
             "name": "eoneopay/utils",
@@ -7168,7 +7168,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
