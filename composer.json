@@ -12,6 +12,7 @@
     "eoneopay/apiformats": "dev-master",
     "eoneopay/externals": "dev-master",
     "eoneopay/utils": "dev-master",
+    "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
     "laravel-doctrine/orm": "^1.4",
     "vlucas/phpdotenv": "~2.2"

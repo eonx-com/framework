@@ -38,6 +38,14 @@ class EntityStub extends Entity
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getIdProperty(): string
+    {
+        return 'entityId';
+    }
+
+    /**
      * Get string.
      *
      * @return null|string
