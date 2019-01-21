@@ -312,9 +312,9 @@ class ExceptionHandler extends Handler
         }
 
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
-            'code' => $exception->getCode(),
+            'code' => $exception->getErrorCode(),
             'message' => $decoded ?? $message ?? (string)$this->translator->trans('exceptions.messages.unknown'),
-            'sub_code' => 0,
+            'sub_code' => $exception->getErrorSubCode(),
             'time' => $this->getTimestamp()
         ], $exception->getResponse()->getStatusCode()));
     }
