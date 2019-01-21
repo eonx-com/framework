@@ -8,15 +8,18 @@ use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderInterface;
 use EoneoPay\Externals\Environment\Env;
+use EoneoPay\Externals\HttpClient\Interfaces\InvalidApiResponseExceptionInterface;
 use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
 use EoneoPay\Externals\Translator\Interfaces\TranslatorInterface;
 use EoneoPay\Utils\Arr;
+use EoneoPay\Utils\Exceptions\InvalidXmlException;
 use EoneoPay\Utils\Interfaces\Exceptions\ClientExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\CriticalExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\RuntimeExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface;
 use EoneoPay\Utils\UtcDateTime;
+use EoneoPay\Utils\XmlConverter;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -82,30 +85,6 @@ class ExceptionHandler extends Handler
     }
 
     /**
-     * @inheritdoc
-     *
-     * @throws \Exception If internal logger can't be instantiated from container
-     */
-    public function report(Exception $exception): void
-    {
-        // Log all exceptions with notice log level
-        $this->logger->exception($exception);
-
-        // If exception is runtime bump up to error
-        if ($exception instanceof RuntimeExceptionInterface) {
-            $this->logger->exception($exception, 'error');
-        }
-
-        // If exception is critical bump up to critical
-        if ($exception instanceof CriticalExceptionInterface) {
-            $this->logger->exception($exception, 'critical');
-        }
-
-        // Throw exception for the lumen handler
-        parent::report($exception);
-    }
-
-    /**
      * @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called
      *
      * @inheritdoc
@@ -126,7 +105,7 @@ class ExceptionHandler extends Handler
         }
 
         if ($exception instanceof NotFoundHttpException) {
-            return $this->handleUnsupportedException(
+            return $this->renderUnsupportedException(
                 $exception,
                 $this->translator->trans('exceptions.messages.not_found'),
                 404
@@ -134,7 +113,14 @@ class ExceptionHandler extends Handler
         }
 
         if ($exception instanceof ValidationExceptionInterface) {
-            return $this->handleValidationException($exception);
+            return $this->renderValidationException($exception);
+        }
+
+        if ($exception instanceof InvalidApiResponseExceptionInterface) {
+            return $this->renderExternalApiException(
+                $exception,
+                (string)$this->translator->trans('exceptions.messages.invalid_response')
+            );
         }
 
         // Catch any other exceptions using the interface
@@ -143,7 +129,33 @@ class ExceptionHandler extends Handler
         }
 
         // Handle all other exceptions
-        return $this->handleUnsupportedException($exception);
+        return $this->renderUnsupportedException($exception);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @throws \Exception If internal logger can't be instantiated from container
+     */
+    public function report(Exception $exception): void
+    {
+        // Log all exceptions with notice log level
+        $logLevel = null;
+
+        // If exception is runtime bump up to error
+        if ($exception instanceof RuntimeExceptionInterface) {
+            $logLevel = 'error';
+        }
+
+        // If exception is critical bump up to critical
+        if ($exception instanceof CriticalExceptionInterface) {
+            $logLevel = 'critical';
+        }
+
+        $this->logger->exception($exception, $logLevel);
+
+        // Throw exception for the lumen handler
+        parent::report($exception);
     }
 
     /**
@@ -156,6 +168,33 @@ class ExceptionHandler extends Handler
     private function getEncoder(Request $request): EncoderInterface
     {
         return $this->encoder ?? $this->encoder = $request->get('_encoder', $this->encoderGuesser->defaultEncoder());
+    }
+
+    /**
+     * Get exception message if not in production otherwise fallback to given default.
+     *
+     * @param \Throwable $exception The exception to get the message for
+     * @param string $default The default message to use if in production or exception message is missing
+     *
+     * @return string
+     */
+    private function getExceptionMessage(Throwable $exception, string $default): string
+    {
+        return $this->inProduction() === false && empty($exception->getMessage()) === false ?
+            $exception->getMessage() :
+            $default;
+    }
+
+    /**
+     * Get exception timestamp
+     *
+     * @return string
+     *
+     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
+     */
+    private function getTimestamp(): string
+    {
+        return (new UtcDateTime('now'))->getZulu();
     }
 
     /**
@@ -193,6 +232,30 @@ class ExceptionHandler extends Handler
     }
 
     /**
+     * Determine if we're in production or not
+     *
+     * @return bool
+     */
+    private function inProduction(): bool
+    {
+        return (new Env())->get('APP_ENV') === 'production';
+    }
+
+    /**
+     * Determine if a string is json
+     *
+     * @param string $string The string to check
+     *
+     * @return bool
+     */
+    private function isJson(string $string): bool
+    {
+        \json_decode($string);
+
+        return \json_last_error() === \JSON_ERROR_NONE;
+    }
+
+    /**
      * Convert exception into response
      *
      * @param \EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface $exception The exception to render
@@ -217,30 +280,43 @@ class ExceptionHandler extends Handler
     }
 
     /**
-     * Get exception message if not in production otherwise fallback to given default.
+     * Create response for invalid api exceptions
      *
-     * @param \Throwable $exception The exception to get the message for
-     * @param string $default The default message to use if in production or exception message is missing
+     * @param \EoneoPay\Externals\HttpClient\Interfaces\InvalidApiResponseExceptionInterface $exception The exception
+     * @param string|null $message The message to display in production
      *
-     * @return string
-     */
-    private function getExceptionMessage(Throwable $exception, string $default): string
-    {
-        return (new Env())->get('APP_ENV') !== 'production' && empty($exception->getMessage()) === false ?
-            $exception->getMessage() :
-            $default;
-    }
-
-    /**
-     * Get exception timestamp
+     * @return \Illuminate\Http\Response
      *
-     * @return string
-     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
-    private function getTimestamp(): string
-    {
-        return (new UtcDateTime('now'))->getZulu();
+    private function renderExternalApiException(
+        InvalidApiResponseExceptionInterface $exception,
+        ?string $message = null
+    ): Response {
+        // Get content if we're not in production
+        if ($this->inProduction() === false) {
+            $content = $decoded = $exception->getResponse()->getContent();
+
+            // Attempt to decode json
+            if ($this->isJson($content) === true) {
+                $decoded = \json_decode($content) ?: $message;
+            }
+
+            // Attempt to decode xml
+            try {
+                $decoded = (new XmlConverter())->xmlToArray($content);
+            } /** @noinspection BadExceptionsProcessingInspection */ catch (InvalidXmlException $xmlException) {
+                // This can safely be ignored and message will be displayed instead
+            }
+        }
+
+        return $this->createLaravelResponseFromPsr($this->encoder->encode([
+            'code' => $exception->getCode(),
+            'message' => $decoded ?? $message ?? (string)$this->translator->trans('exceptions.messages.unknown'),
+            'sub_code' => 0,
+            'time' => $this->getTimestamp()
+        ], $exception->getResponse()->getStatusCode()));
     }
 
     /**
@@ -255,7 +331,7 @@ class ExceptionHandler extends Handler
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
-    private function handleUnsupportedException(
+    private function renderUnsupportedException(
         Throwable $exception,
         ?string $message = null,
         ?int $statusCode = null
@@ -281,7 +357,7 @@ class ExceptionHandler extends Handler
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
-    private function handleValidationException(ValidationExceptionInterface $exception): Response
+    private function renderValidationException(ValidationExceptionInterface $exception): Response
     {
         return $this->renderException(
             $exception,
