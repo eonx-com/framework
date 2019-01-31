@@ -12,7 +12,7 @@ class ExceptionHandlerStub extends ExceptionHandler
      *
      * @return string[]
      */
-    protected function initDontReport(): array
+    protected function getNonReportableExceptions(): array
     {
         return [];
     }

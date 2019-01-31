@@ -83,7 +83,7 @@ abstract class ExceptionHandler extends Handler
         $this->psr7Factory = $psr7Factory;
         $this->translator = $translator;
 
-        $this->dontReport = $this->initDontReport();
+        $this->dontReport = $this->getNonReportableExceptions();
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class ExceptionHandler extends Handler
      *
      * @return string[]
      */
-    abstract protected function initDontReport(): array;
+    abstract protected function getNonReportableExceptions(): array;
 
     /**
      * Set ApiFormats encoder for given request. This method is protected to allow children to use it.
