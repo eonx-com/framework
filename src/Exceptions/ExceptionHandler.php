@@ -6,7 +6,6 @@ namespace EoneoPay\Framework\Exceptions;
 use EoneoPay\ApiFormats\Bridge\Laravel\Traits\LaravelResponseTrait;
 use EoneoPay\ApiFormats\External\Interfaces\Psr7\Psr7FactoryInterface;
 use EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface;
-use EoneoPay\ApiFormats\Interfaces\EncoderInterface;
 use EoneoPay\Externals\Environment\Env;
 use EoneoPay\Externals\HttpClient\Interfaces\InvalidApiResponseExceptionInterface;
 use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
@@ -32,12 +31,13 @@ use Throwable;
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) High coupling to filter exceptions
  */
-class ExceptionHandler extends Handler
+abstract class ExceptionHandler extends Handler
 {
     use LaravelResponseTrait;
 
     /**
-     * Encoder instance
+     * Encoder instance.
+     * This property is protected to allow children to use it, remember to use setEncoder(Request $request) first.
      *
      * @var \EoneoPay\ApiFormats\Interfaces\EncoderInterface
      */
@@ -82,6 +82,8 @@ class ExceptionHandler extends Handler
         $this->logger = $logger;
         $this->psr7Factory = $psr7Factory;
         $this->translator = $translator;
+
+        $this->dontReport = $this->initDontReport();
     }
 
     /**
@@ -94,7 +96,7 @@ class ExceptionHandler extends Handler
      */
     public function render($request, Exception $exception): Response
     {
-        $this->encoder = $this->getEncoder($request);
+        $this->setEncoder($request); // Set encoder to allow rendering methods to use it
 
         if ($exception instanceof ClientExceptionInterface) {
             return $this->handleClientException($exception);
@@ -159,15 +161,22 @@ class ExceptionHandler extends Handler
     }
 
     /**
-     * Get encoder for given request.
+     * Initiate the list of exceptions to suppress from the report method
+     *
+     * @return string[]
+     */
+    abstract protected function initDontReport(): array;
+
+    /**
+     * Set ApiFormats encoder for given request. This method is protected to allow children to use it.
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \EoneoPay\ApiFormats\Interfaces\EncoderInterface
+     * @return void
      */
-    private function getEncoder(Request $request): EncoderInterface
+    protected function setEncoder(Request $request): void
     {
-        return $this->encoder ?? $this->encoder = $request->get('_encoder', $this->encoderGuesser->defaultEncoder());
+        $this->encoder = $request->get('_encoder', $this->encoderGuesser->defaultEncoder());
     }
 
     /**
