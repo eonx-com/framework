@@ -55,7 +55,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller = new ControllerStub($this->getEntityManager());
 
         $controller->saveEntity($entity);
-        $remove = $controller->deleteEntityAndRespond(EntityStub::class, $entity->getEntityId());
+        $remove = $controller->deleteEntityAndRespond(EntityStub::class, (string)$entity->getEntityId());
 
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $remove);
@@ -118,7 +118,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller->saveEntity($entity);
         $update = $controller->updateEntityAndRespond(
             EntityStub::class,
-            $entity->getEntityId(),
+            (string)$entity->getEntityId(),
             new Request(new HttpRequest())
         );
 
