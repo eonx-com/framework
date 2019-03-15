@@ -77,7 +77,7 @@ class VersionHelper implements VersionHelperInterface
         RequestInterface $request,
         $defaultVersion = null
     ) {
-        $this->basePath = \realpath($basePath);
+        $this->basePath = \realpath($basePath) ?: $basePath;
         $this->defaultVersion = $this->formatVersion($defaultVersion ?? '1');
         $this->request = $request;
     }
