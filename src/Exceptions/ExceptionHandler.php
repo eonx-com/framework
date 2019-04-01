@@ -189,9 +189,22 @@ abstract class ExceptionHandler extends Handler
      */
     private function getExceptionMessage(Throwable $exception, string $default): string
     {
-        return $this->inProduction() === false && empty($exception->getMessage()) === false ?
-            $exception->getMessage() :
-            $default;
+        if ($this->inProduction() === true || $exception->getMessage() === '') {
+            return $default;
+        }
+
+        $params = [];
+
+        if (($exception instanceof ExceptionInterface) === true) {
+            /**
+             * @var \EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface $exception
+             *
+             * @see https://youtrack.jetbrains.com/issue/WI-37859 - typehint required until PhpStorm recognises ===
+             */
+            $params = $exception->getMessageParameters();
+        }
+
+        return $this->translator->trans($exception->getMessage(), $params);
     }
 
     /**
@@ -263,7 +276,7 @@ abstract class ExceptionHandler extends Handler
      */
     private function isJson(string $string): bool
     {
-        \json_decode($string);
+        \json_decode($string, true);
 
         return \json_last_error() === \JSON_ERROR_NONE;
     }
