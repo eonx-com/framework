@@ -11,9 +11,11 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 use Doctrine\ORM\EntityManagerInterface as DoctrineEntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\SchemaTool;
 use EoneoPay\Externals\ORM\EntityManager;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Framework\Database\Repositories\Repository;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to doctrine configuration
@@ -94,6 +96,13 @@ abstract class WithEntityManagerTestCase extends TestCase
         // Use our already initialized cache driver
         $config->setMetadataCacheImpl($cache);
         $config->setQueryCacheImpl($cache);
+
+        // Set default repository class
+        try {
+            $config->setDefaultRepositoryClassName(Repository::class);
+        } catch (ORMException $exception) {
+            self::fail(\sprintf('Exception thrown when setting custom repository: %s', $exception->getMessage()));
+        }
 
         // Finally, create entity manager
         $this->doctrine = DoctrineEntityManager::create(self::$connection, $config);

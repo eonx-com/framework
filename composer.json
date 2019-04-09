@@ -10,17 +10,17 @@
   "require": {
     "php": ">=7.1",
     "eoneopay/apiformats": "dev-master",
-    "eoneopay/externals": "dev-master",
+    "eoneopay/externals": "1.0.0-RC1",
     "eoneopay/utils": "dev-master",
     "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
     "laravel-doctrine/orm": "^1.4",
-    "vlucas/phpdotenv": "~2.2"
+    "vlucas/phpdotenv": "^3.0"
   },
   "require-dev": {
     "eoneopay/standards": "dev-master",
     "phpmd/phpmd": "^2.6",
-    "phpstan/phpstan": "^0.9",
+    "phpstan/phpstan": "^0.11",
     "phpunit/phpunit": "^7.0",
     "roave/security-advisories": "dev-master",
     "sebastian/phpcpd": "^4.0",
