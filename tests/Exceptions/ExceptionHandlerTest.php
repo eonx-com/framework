@@ -25,6 +25,7 @@ use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubValidationFailedException;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ClientExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
+use Tests\EoneoPay\Framework\Exceptions\Stubs\ExceptionHandlerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
@@ -239,7 +240,7 @@ class ExceptionHandlerTest extends TestCase
      */
     private function createExceptionHandler(): ExceptionHandler
     {
-        return new ExceptionHandler(
+        return new ExceptionHandlerStub(
             new EncoderGuesser([]),
             $this->logger,
             new Psr7Factory(),

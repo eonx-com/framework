@@ -133,12 +133,17 @@ abstract class Controller extends BaseController implements ControllerInterface
     ): EntityInterface {
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
-        if ($entity === null) {
+        if (($entity instanceof EntityInterface) === false) {
             $exceptionClass = $notFoundException ?? EntityNotFoundException::class;
 
             throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
+        /**
+         * @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+         *
+         * @see https://youtrack.jetbrains.com/issue/WI-37859 - typehint required until PhpStorm recognises === check
+         */
         return $entity;
     }
 
