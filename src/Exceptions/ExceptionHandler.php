@@ -220,19 +220,19 @@ abstract class ExceptionHandler extends Handler
     {
         // Get message
         switch ($exception->getStatusCode()) {
-            case 401:
+            case 401: // @codeCoverageIgnore
                 $message = $this->translator->trans('exceptions.messages.unauthorised');
                 break;
 
-            case 403:
+            case 403: // @codeCoverageIgnore
                 $message = $this->translator->trans('exceptions.messages.forbidden');
                 break;
 
-            case 404:
+            case 404: // @codeCoverageIgnore
                 $message = $this->translator->trans('exceptions.messages.not_found');
                 break;
 
-            case 409:
+            case 409: // @codeCoverageIgnore
                 $message = $this->translator->trans('exceptions.messages.conflict');
                 break;
 

@@ -30,6 +30,58 @@ class LoggerStub implements LoggerInterface
     private $message;
 
     /**
+     * @inheritdoc
+     */
+    public function alert($message, ?array $context = null): bool
+    {
+        return $this->log('alert', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function critical($message, ?array $context = null): bool
+    {
+        return $this->log('critical', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function debug($message, ?array $context = null): bool
+    {
+        return $this->log('debug', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function emergency($message, ?array $context = null): bool
+    {
+        return $this->log('emergency', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function error($message, ?array $context = null): bool
+    {
+        return $this->log('error', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function exception(Exception $exception, ?string $level = null): bool
+    {
+        return $this->log(
+            $level ?? 'notice',
+            \sprintf('Exception caught: %s', $exception->getMessage()),
+            $exception->getTrace()
+        );
+    }
+
+    /**
      * Get log level
      *
      * @return string|null
@@ -40,102 +92,38 @@ class LoggerStub implements LoggerInterface
     }
 
     /**
-     * Adds a debug message to the log
-     *
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function debug(string $message, ?array $context = null): bool
+    public function info($message, ?array $context = null): bool
     {
-        return $this->write('debug', $message, $context ?? []);
+        return $this->log('info', $message, $context ?? []);
     }
 
     /**
-     * Adds an error message to the log
-     *
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function error(string $message, ?array $context = null): bool
-    {
-        return $this->write('error', $message, $context ?? []);
-    }
-
-    /**
-     * Record a caught exception with backtrace
-     *
-     * @param \Exception $exception The exception to handle
-     * @param string|null $level The log level for this exception
-     *
-     * @return bool
-     */
-    public function exception(Exception $exception, ?string $level = null): bool
-    {
-        return $this->write(
-            $level ?? 'notice',
-            \sprintf('Exception caught: %s', $exception->getMessage()),
-            $exception->getTrace()
-        );
-    }
-
-    /**
-     * Adds an informational message to the log
-     *
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
-     */
-    public function info(string $message, ?array $context = null): bool
-    {
-        return $this->write('info', $message, $context ?? []);
-    }
-
-    /**
-     * Adds a notice to the log
-     *
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
-     */
-    public function notice(string $message, ?array $context = null): bool
-    {
-        return $this->write('notice', $message, $context ?? []);
-    }
-
-    /**
-     * Adds a warning to the log
-     *
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
-     */
-    public function warning(string $message, ?array $context = null): bool
-    {
-        return $this->write('warning', $message, $context ?? []);
-    }
-
-    /**
-     * 'Write' to log file
-     *
-     * @param string $type The log type
-     * @param string $message The log message
-     * @param mixed[] $context Additional log context
-     *
-     * @return bool
-     */
-    private function write(string $type, string $message, ?array $context = null): bool
+    public function log($level, $message, ?array $context = null): bool
     {
         $this->context = $context;
-        $this->logLevel = $type;
+        $this->logLevel = $level;
         $this->message = $message;
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function notice($message, ?array $context = null): bool
+    {
+        return $this->log('notice', $message, $context ?? []);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function warning($message, ?array $context = null): bool
+    {
+        return $this->log('warning', $message, $context ?? []);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f29adf9ab73fff192157d79b213b7d33",
+    "content-hash": "5c1b642ab9da05d87101dff933705607",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1046,16 +1046,16 @@
         },
         {
             "name": "eoneopay/externals",
-            "version": "v1.0.0-RC1",
+            "version": "v1.0.0-RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/loyaltycorp/externals.git",
-                "reference": "2ab99abec29b6327a9fc6b016ec2ea6c33561083"
+                "reference": "3d6347ee2b57dd1f4811746f3c7148ed7d8370b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/2ab99abec29b6327a9fc6b016ec2ea6c33561083",
-                "reference": "2ab99abec29b6327a9fc6b016ec2ea6c33561083",
+                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/3d6347ee2b57dd1f4811746f3c7148ed7d8370b2",
+                "reference": "3d6347ee2b57dd1f4811746f3c7148ed7d8370b2",
                 "shasum": ""
             },
             "require": {
@@ -1115,7 +1115,7 @@
             "keywords": [
                 "external"
             ],
-            "time": "2019-04-09T05:19:25+00:00"
+            "time": "2019-04-10T03:24:13+00:00"
         },
         {
             "name": "eoneopay/utils",
@@ -1123,12 +1123,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/loyaltycorp/utils.git",
-                "reference": "5dea634e625b3e50236ad94322070b95cf51f4c7"
+                "reference": "f68549357c03b4114a84a88cec28a0cd10d33dc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/loyaltycorp/utils/zipball/5dea634e625b3e50236ad94322070b95cf51f4c7",
-                "reference": "5dea634e625b3e50236ad94322070b95cf51f4c7",
+                "url": "https://api.github.com/repos/loyaltycorp/utils/zipball/f68549357c03b4114a84a88cec28a0cd10d33dc8",
+                "reference": "f68549357c03b4114a84a88cec28a0cd10d33dc8",
                 "shasum": ""
             },
             "require": {
@@ -1173,7 +1173,7 @@
                 "helpers",
                 "utilities"
             ],
-            "time": "2019-03-19T04:05:25+00:00"
+            "time": "2019-04-10T04:08:38+00:00"
         },
         {
             "name": "illuminate/auth",
@@ -6152,12 +6152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "bd4dca680a7af3fb99f07dd9c0511f3fb8d066af"
+                "reference": "a0112223428a14391f094c5fa7301677d49bccf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/bd4dca680a7af3fb99f07dd9c0511f3fb8d066af",
-                "reference": "bd4dca680a7af3fb99f07dd9c0511f3fb8d066af",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/a0112223428a14391f094c5fa7301677d49bccf2",
+                "reference": "a0112223428a14391f094c5fa7301677d49bccf2",
                 "shasum": ""
             },
             "conflict": {
@@ -6177,8 +6177,8 @@
                 "codeigniter/framework": "<=3.0.6",
                 "composer/composer": "<=1.0.0-alpha11",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
-                "contao/core": ">=2,<3.5.35",
-                "contao/core-bundle": ">=4,<4.4.18|>=4.5,<4.5.8",
+                "contao/core": ">=2,<3.5.39",
+                "contao/core-bundle": ">=4,<4.4.37|>=4.5,<4.7.3",
                 "contao/listing-bundle": ">=4,<4.4.8",
                 "contao/newsletter-bundle": ">=4,<4.1",
                 "david-garcia/phpwhois": "<=4.3.1",
@@ -6290,7 +6290,7 @@
                 "symfony/yaml": ">=2,<2.0.22|>=2.1,<2.1.7",
                 "tecnickcom/tcpdf": "<6.2.22",
                 "thelia/backoffice-default-template": ">=2.1,<2.1.2",
-                "thelia/thelia": ">=2.1.0-beta1,<2.1.3|>=2.1,<2.1.2",
+                "thelia/thelia": ">=2.1,<2.1.2|>=2.1.0-beta1,<2.1.3",
                 "theonedemon/phpwhois": "<=4.2.5",
                 "titon/framework": ">=0,<9.9.99",
                 "truckersmp/phpwhois": "<=4.3.1",
@@ -6349,7 +6349,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2019-04-07T10:25:46+00:00"
+            "time": "2019-04-09T13:39:27+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -7416,10 +7416,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "RC",
     "stability-flags": {
         "eoneopay/apiformats": 20,
-        "eoneopay/externals": 5,
         "eoneopay/utils": 20,
         "eoneopay/standards": 20,
         "roave/security-advisories": 20
@@ -7427,7 +7426,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "ext-json": "*"
     },
     "platform-dev": []
