@@ -116,7 +116,8 @@ class ExceptionHandlerTest extends TestCase
             400 => 'exceptions.messages.client_error',
             401 => 'exceptions.messages.unauthorised',
             403 => 'exceptions.messages.forbidden',
-            404 => 'exceptions.messages.not_found'
+            404 => 'exceptions.messages.not_found',
+            409 => 'exceptions.messages.conflict'
         ];
 
         $exceptionHandler = $this->createExceptionHandler();

@@ -232,6 +232,10 @@ abstract class ExceptionHandler extends Handler
                 $message = $this->translator->trans('exceptions.messages.not_found');
                 break;
 
+            case 409:
+                $message = $this->translator->trans('exceptions.messages.conflict');
+                break;
+
             default:
                 $message = $this->translator->trans('exceptions.messages.client_error');
                 break;
