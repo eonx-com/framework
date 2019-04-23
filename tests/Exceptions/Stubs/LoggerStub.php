@@ -72,9 +72,9 @@ class LoggerStub implements LoggerInterface
     /**
      * @inheritdoc
      */
-    public function exception(Exception $exception, ?string $level = null): bool
+    public function exception(Exception $exception, ?string $level = null): void
     {
-        return $this->log(
+        $this->log(
             $level ?? 'notice',
             \sprintf('Exception caught: %s', $exception->getMessage()),
             $exception->getTrace()
