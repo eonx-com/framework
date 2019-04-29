@@ -89,7 +89,7 @@ abstract class ExceptionHandler extends Handler
     /**
      * @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called
      *
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
@@ -135,7 +135,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @throws \Exception If internal logger can't be instantiated from container
      */

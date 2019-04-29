@@ -16,7 +16,7 @@ class ClientExceptionStub extends Exception implements ClientExceptionInterface
     private $statusCode = 200;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorCode(): int
     {
@@ -24,7 +24,7 @@ class ClientExceptionStub extends Exception implements ClientExceptionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorSubCode(): int
     {
@@ -32,7 +32,15 @@ class ClientExceptionStub extends Exception implements ClientExceptionInterface
     }
 
     /**
-     * @inheritdoc
+     * {{@inheritdoc}}
+     */
+    public function getMessageParameters(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getStatusCode(): int
     {

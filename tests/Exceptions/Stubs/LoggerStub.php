@@ -30,47 +30,47 @@ class LoggerStub implements LoggerInterface
     private $message;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function alert($message, ?array $context = null): bool
+    public function alert($message, ?array $context = null): void
     {
-        return $this->log('alert', $message, $context ?? []);
+        $this->log('alert', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function critical($message, ?array $context = null): bool
+    public function critical($message, ?array $context = null): void
     {
-        return $this->log('critical', $message, $context ?? []);
+        $this->log('critical', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function debug($message, ?array $context = null): bool
+    public function debug($message, ?array $context = null): void
     {
-        return $this->log('debug', $message, $context ?? []);
+        $this->log('debug', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function emergency($message, ?array $context = null): bool
+    public function emergency($message, ?array $context = null): void
     {
-        return $this->log('emergency', $message, $context ?? []);
+        $this->log('emergency', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function error($message, ?array $context = null): bool
+    public function error($message, ?array $context = null): void
     {
-        return $this->log('error', $message, $context ?? []);
+        $this->log('error', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function exception(Exception $exception, ?string $level = null): void
     {
@@ -92,38 +92,36 @@ class LoggerStub implements LoggerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function info($message, ?array $context = null): bool
+    public function info($message, ?array $context = null): void
     {
-        return $this->log('info', $message, $context ?? []);
+        $this->log('info', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function log($level, $message, ?array $context = null): bool
+    public function log($level, $message, ?array $context = null): void
     {
         $this->context = $context;
         $this->logLevel = $level;
         $this->message = $message;
-
-        return true;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function notice($message, ?array $context = null): bool
+    public function notice($message, ?array $context = null): void
     {
-        return $this->log('notice', $message, $context ?? []);
+        $this->log('notice', $message, $context ?? []);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function warning($message, ?array $context = null): bool
+    public function warning($message, ?array $context = null): void
     {
-        return $this->log('warning', $message, $context ?? []);
+        $this->log('warning', $message, $context ?? []);
     }
 }

@@ -8,7 +8,7 @@ use EoneoPay\Utils\Exceptions\CriticalException;
 class CriticalExceptionStub extends CriticalException
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorCode(): int
     {
@@ -16,7 +16,7 @@ class CriticalExceptionStub extends CriticalException
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorMessage(): string
     {
@@ -24,7 +24,7 @@ class CriticalExceptionStub extends CriticalException
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorSubCode(): int
     {

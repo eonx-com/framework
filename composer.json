@@ -11,7 +11,7 @@
     "php": ">=7.2",
     "eoneopay/apiformats": "dev-master",
     "eoneopay/externals": "^1.0",
-    "eoneopay/utils": "dev-master",
+    "eoneopay/utils": "^0.2",
     "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
     "laravel-doctrine/orm": "^1.4",
@@ -36,7 +36,7 @@
       "Tests\\EoneoPay\\Framework\\": "tests/"
     }
   },
-  "minimum-stability": "RC",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
     "optimize-autoloader": true

@@ -8,7 +8,7 @@ use EoneoPay\Utils\Exceptions\RuntimeException;
 class UnsupportedVersionException extends RuntimeException
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorCode(): int
     {
@@ -16,7 +16,7 @@ class UnsupportedVersionException extends RuntimeException
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getErrorSubCode(): int
     {
