@@ -32,7 +32,7 @@ class ClientExceptionStub extends Exception implements ClientExceptionInterface
     }
 
     /**
-     * {{@inheritdoc}}
+     * {@inheritdoc}
      */
     public function getMessageParameters(): array
     {
