@@ -65,7 +65,7 @@ class ExceptionHandlerTest extends TestCase
             new Exception(),
             new EntityNotFoundException(),
             new EntityStubNotFoundException(),
-            new EntityStubValidationFailedException(null, null, null, ['error' => ['test' => true]]),
+            new EntityStubValidationFailedException(null, null, null, null, ['error' => ['test' => true]]),
             new NotFoundHttpException(),
             new RuntimeExceptionStub()
         ];
