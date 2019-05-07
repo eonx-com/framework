@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator as ContractedTranslator;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubValidationFailedException;
@@ -28,6 +29,7 @@ use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ExceptionHandlerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
+use Tests\EoneoPay\Framework\Exceptions\Stubs\ValidationExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
 /**
@@ -197,6 +199,48 @@ class ExceptionHandlerTest extends TestCase
             /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
             self::assertInstanceOf(Response::class, $response);
         }
+    }
+
+    /**
+     * Test exception handler always return right response.
+     *
+     * @return void
+     */
+    public function testRenderForConsole(): void
+    {
+        $exceptionHandler = $this->createExceptionHandler();
+
+        $output = new BufferedOutput();
+        $exception = new ValidationExceptionStub(
+            null,
+            null,
+            null,
+            null,
+            [
+                'property' => [
+                    'Property must not be null'
+                ]
+            ]
+        );
+        $exceptionHandler->renderForConsole($output, $exception);
+
+        self::assertContains('property - "Property must not be null"', $output->fetch());
+    }
+
+    /**
+     * Test exception handler always return right response.
+     *
+     * @return void
+     */
+    public function testRenderForConsoleEmptyException(): void
+    {
+        $exceptionHandler = $this->createExceptionHandler();
+
+        $output = new BufferedOutput();
+        $exception = new ValidationExceptionStub();
+        $exceptionHandler->renderForConsole($output, $exception);
+
+        self::assertContains('No validation errors in exception', $output->fetch());
     }
 
     /**

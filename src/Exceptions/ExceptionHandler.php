@@ -135,6 +135,42 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
+     * Extends the default renderForConsole to provide additional feedback
+     * when the thrown exception is an instance of a ValidationException and
+     * reports the validation failure information after the stack trace.
+     *
+     * {@inheritdoc}
+     */
+    public function renderForConsole($output, Exception $exception): void
+    {
+        parent::renderForConsole($output, $exception);
+
+        if (($exception instanceof ValidationExceptionInterface) === true) {
+            /**
+             * @var \EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface $exception
+             */
+            $output->writeln('<error>Validation Failures:</error>');
+
+            if (\count($exception->getErrors()) === 0) {
+                $output->writeln('No validation errors in exception');
+
+                return;
+            }
+
+            foreach ($exception->getErrors() as $key => $errors) {
+                /** @var mixed[] $error */
+                foreach ($errors as $error) {
+                    $output->writeln(\sprintf(
+                        '<error>%s</error> - %s',
+                        $key,
+                        \json_encode($error)
+                    ));
+                }
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @throws \Exception If internal logger can't be instantiated from container
