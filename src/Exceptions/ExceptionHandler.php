@@ -87,7 +87,9 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * @noinspection PhpMissingParentCallCommonInspection Parent intentionally not called
+     * @noinspection MultipleReturnStatementsInspection PhpMissingParentCallCommonInspection
+     * - Complexity required to handle multiple exception types
+     * - Parent intentionally not called
      *
      * {@inheritdoc}
      *
@@ -109,7 +111,7 @@ abstract class ExceptionHandler extends Handler
         if ($exception instanceof NotFoundHttpException) {
             return $this->renderUnsupportedException(
                 $exception,
-                $this->translator->trans('exceptions.messages.not_found'),
+                'Not found.',
                 404
             );
         }
@@ -121,13 +123,13 @@ abstract class ExceptionHandler extends Handler
         if ($exception instanceof InvalidApiResponseExceptionInterface) {
             return $this->renderExternalApiException(
                 $exception,
-                (string)$this->translator->trans('exceptions.messages.invalid_response')
+                'Invalid response received.'
             );
         }
 
         // Catch any other exceptions using the interface
         if ($exception instanceof ExceptionInterface) {
-            return $this->renderException($exception, (string)$this->translator->trans('exceptions.messages.unknown'));
+            return $this->renderException($exception, 'An unknown error occured.');
         }
 
         // Handle all other exceptions
@@ -234,27 +236,31 @@ abstract class ExceptionHandler extends Handler
         // Get message
         switch ($exception->getStatusCode()) {
             case 401: // @codeCoverageIgnore
-                $message = $this->translator->trans('exceptions.messages.unauthorised');
+                $message = 'Unauthorised.';
                 break;
 
             case 403: // @codeCoverageIgnore
-                $message = $this->translator->trans('exceptions.messages.forbidden');
+                $message = 'Forbidden.';
                 break;
 
             case 404: // @codeCoverageIgnore
-                $message = $this->translator->trans('exceptions.messages.not_found');
+                $message = 'Not found.';
+                break;
+
+            case 406: // @codeCoverageIgnore
+                $message = 'Not acceptable.';
                 break;
 
             case 409: // @codeCoverageIgnore
-                $message = $this->translator->trans('exceptions.messages.conflict');
+                $message = 'Conflict.';
                 break;
 
             default:
-                $message = $this->translator->trans('exceptions.messages.client_error');
+                $message = 'Bad request.';
                 break;
         }
 
-        return $this->renderException($exception, (string)$message);
+        return $this->renderException($exception, $message);
     }
 
     /**
@@ -322,11 +328,12 @@ abstract class ExceptionHandler extends Handler
     ): Response {
         // Get content if we're not in production
         if ($this->inProduction() === false) {
-            $content = $decoded = $exception->getResponse()->getContent();
+            $content = $exception->getResponse()->getContent();
+            $decoded = $content;
 
             // Attempt to decode json
             if ($this->isJson($content) === true) {
-                $decoded = \json_decode($content) ?: $message;
+                $decoded = \json_decode($content, true) ?: $message;
             }
 
             // Attempt to decode xml
@@ -339,7 +346,7 @@ abstract class ExceptionHandler extends Handler
 
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getErrorCode(),
-            'message' => $decoded ?? $message ?? (string)$this->translator->trans('exceptions.messages.unknown'),
+            'message' => $decoded ?? $message ?? 'An unknown error occured.',
             'sub_code' => $exception->getErrorSubCode(),
             'time' => $this->getTimestamp()
         ], $exception->getResponse()->getStatusCode()));
@@ -366,7 +373,7 @@ abstract class ExceptionHandler extends Handler
             'code' => $exception->getCode(),
             'message' => $this->getExceptionMessage(
                 $exception,
-                $message ?? (string)$this->translator->trans('exceptions.messages.unknown')
+                $message ?? 'An unknown error occured.'
             ),
             'sub_code' => 0,
             'time' => $this->getTimestamp()
@@ -387,7 +394,7 @@ abstract class ExceptionHandler extends Handler
     {
         return $this->renderException(
             $exception,
-            (string)$this->translator->trans('exceptions.messages.validation_error'),
+            'Validation failed.',
             ['violations' => $exception->getErrors()]
         );
     }
