@@ -62,8 +62,6 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -104,9 +102,6 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      *
      * @return void
-     *
-     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
     public function removeEntity(EntityInterface $entity): void
     {

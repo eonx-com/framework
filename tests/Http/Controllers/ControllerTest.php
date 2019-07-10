@@ -35,7 +35,7 @@ class ControllerTest extends WithEntityManagerTestCase
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $create);
         self::assertInstanceOf(EntityStub::class, $create->getContent());
-        self::assertEquals(201, $create->getStatusCode());
+        self::assertSame(201, $create->getStatusCode());
     }
 
     /**
@@ -59,8 +59,8 @@ class ControllerTest extends WithEntityManagerTestCase
 
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $remove);
-        self::assertEquals([], $remove->getContent());
-        self::assertEquals(203, $remove->getStatusCode());
+        self::assertSame([], $remove->getContent());
+        self::assertSame(203, $remove->getStatusCode());
     }
 
     /**
@@ -125,6 +125,6 @@ class ControllerTest extends WithEntityManagerTestCase
         /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
         self::assertInstanceOf(FormattedApiResponseInterface::class, $update);
         self::assertInstanceOf(EntityStub::class, $update->getContent());
-        self::assertEquals(200, $update->getStatusCode());
+        self::assertSame(200, $update->getStatusCode());
     }
 }

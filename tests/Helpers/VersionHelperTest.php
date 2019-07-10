@@ -35,8 +35,8 @@ class VersionHelperTest extends TestCase
 
             $versionHelper = new VersionHelper(__DIR__, $request);
 
-            self::assertEquals($expected, $versionHelper->getControllersNamespace());
-            self::assertEquals($expected, $versionHelper->getControllersNamespace()); // For caching coverage
+            self::assertSame($expected, $versionHelper->getControllersNamespace());
+            self::assertSame($expected, $versionHelper->getControllersNamespace()); // For caching coverage
         }
     }
 
@@ -69,8 +69,8 @@ class VersionHelperTest extends TestCase
 
         $versionHelper = new VersionHelper(__DIR__, $request);
 
-        self::assertEquals($expected, $versionHelper->getRoutesFileBasePath());
-        self::assertEquals($expected, $versionHelper->getRoutesFileBasePath()); // For caching coverage
+        self::assertSame($expected, $versionHelper->getRoutesFileBasePath());
+        self::assertSame($expected, $versionHelper->getRoutesFileBasePath()); // For caching coverage
     }
 
     /**
@@ -106,11 +106,11 @@ class VersionHelperTest extends TestCase
                 'HTTP_HOST' => $test[0]
             ]));
 
-            self::assertEquals(
+            self::assertSame(
                 \sprintf($patternControllers, $test[2], $test[3]),
                 $this->getVersionHelper(__DIR__, $request, $apps)->getControllersNamespace()
             );
-            self::assertEquals(
+            self::assertSame(
                 \sprintf($patternRoutes, __DIR__, $test[2], $test[3]),
                 $this->getVersionHelper(__DIR__, $request, $apps)->getRoutesFileBasePath()
             );

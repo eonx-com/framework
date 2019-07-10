@@ -24,9 +24,9 @@ use LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier;
 class FrameworkServiceProvider extends ServiceProvider
 {
     /**
-     * Register framework services
+     * @noinspection PhpMissingParentCallCommonInspection Parent implementation empty
      *
-     * @return void
+     * @inheritdoc
      */
     public function register(): void
     {
