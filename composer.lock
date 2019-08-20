@@ -1055,16 +1055,16 @@
         },
         {
             "name": "eoneopay/externals",
-            "version": "v1.0.0-RC14",
+            "version": "v1.0.0-RC16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/loyaltycorp/externals.git",
-                "reference": "7f4f9b9ad50ee692f8f6972bcfe19c6135cf4797"
+                "reference": "2db2b4b7ce40570dccbd1cbdfae71d66455779e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/7f4f9b9ad50ee692f8f6972bcfe19c6135cf4797",
-                "reference": "7f4f9b9ad50ee692f8f6972bcfe19c6135cf4797",
+                "url": "https://api.github.com/repos/loyaltycorp/externals/zipball/2db2b4b7ce40570dccbd1cbdfae71d66455779e8",
+                "reference": "2db2b4b7ce40570dccbd1cbdfae71d66455779e8",
                 "shasum": ""
             },
             "require": {
@@ -1092,6 +1092,7 @@
                 "mikey179/vfsstream": "^1.6",
                 "monolog/monolog": "^1.23",
                 "nicoswd/php-gpg": "^1.7",
+                "paragonie/hidden-string": "^1.0",
                 "phpmd/phpmd": "^2.6",
                 "phpstan/phpstan": "^0.11",
                 "phpstan/phpstan-phpunit": "^0.11.0",
@@ -1133,7 +1134,7 @@
             "keywords": [
                 "external"
             ],
-            "time": "2019-07-03T03:19:27+00:00"
+            "time": "2019-08-20T02:39:01+00:00"
         },
         {
             "name": "eoneopay/utils",
@@ -3869,7 +3870,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -5213,7 +5214,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "🔍 Nette Finder: find files and directories with an intuitive API.",
+            "description": "? Nette Finder: find files and directories with an intuitive API.",
             "homepage": "https://nette.org",
             "keywords": [
                 "filesystem",
@@ -5273,7 +5274,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "🍸 Nette NEON: encodes and decodes NEON file format.",
+            "description": "? Nette NEON: encodes and decodes NEON file format.",
             "homepage": "http://ne-on.org",
             "keywords": [
                 "export",

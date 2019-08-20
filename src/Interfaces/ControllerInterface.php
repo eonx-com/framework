@@ -5,6 +5,7 @@ namespace EoneoPay\Framework\Interfaces;
 
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
+use EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface;
 use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 
 interface ControllerInterface
@@ -70,7 +71,7 @@ interface ControllerInterface
      * @param string $entityId
      * @param null|string $notFoundException
      *
-     * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -78,7 +79,7 @@ interface ControllerInterface
         string $entityClass,
         string $entityId,
         ?string $notFoundException = null
-    ): EntityInterface;
+    ): MagicEntityInterface;
 
     /**
      * Save entity into database.
