@@ -31,6 +31,9 @@ use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ValidationExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
+use Zend\Diactoros\Request as PsrRequest;
+use Zend\Diactoros\Response as PsrResponse;
+use Zend\Diactoros\Stream;
 
 /**
  * @noinspection EfferentObjectCouplingInspection High coupling required to full test handler
@@ -98,7 +101,7 @@ class ExceptionHandlerTest extends TestCase
         $env->set('APP_ENV', 'production');
 
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
-        self::assertSame('exceptions.messages.unknown', $content['message'] ?? 'error');
+        self::assertSame('An unknown error occured.', $content['message'] ?? 'error');
 
         // Reset environment
         $env->set('APP_ENV', $environment);
@@ -115,11 +118,12 @@ class ExceptionHandlerTest extends TestCase
     public function testDefaultMessagesForClientExceptions(): void
     {
         $codes = [
-            400 => 'exceptions.messages.client_error',
-            401 => 'exceptions.messages.unauthorised',
-            403 => 'exceptions.messages.forbidden',
-            404 => 'exceptions.messages.not_found',
-            409 => 'exceptions.messages.conflict'
+            400 => 'Bad request.',
+            401 => 'Unauthorised.',
+            403 => 'Forbidden.',
+            404 => 'Not found.',
+            406 => 'Not acceptable.',
+            409 => 'Conflict.'
         ];
 
         $exceptionHandler = $this->createExceptionHandler();
@@ -157,24 +161,24 @@ class ExceptionHandlerTest extends TestCase
         $request = new Request();
 
         // Build an xml response
-        $response = new ApiResponse($data, 400, [], (new XmlConverter())->arrayToXml($data));
-        $exception = new InvalidApiResponseException($response);
+        $response = $this->createApiResponse((new XmlConverter())->arrayToXml($data), 400);
+        $exception = new InvalidApiResponseException(new PsrRequest(), $response);
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
 
         self::assertIsArray($content);
         self::assertSame(\array_merge($data, ['@rootNode' => 'data']), $content['message'] ?? []);
 
         // Build a json response
-        $response = new ApiResponse($data, 400, [], \json_encode($data) ?: '');
-        $exception = new InvalidApiResponseException($response);
+        $response = $this->createApiResponse(\json_encode($data) ?: '', 400);
+        $exception = new InvalidApiResponseException(new PsrRequest(), $response);
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
 
         self::assertIsArray($content);
         self::assertSame($data, $content['message'] ?? []);
 
         // Build a standard response
-        $response = new ApiResponse($data, 400, [], 'Testing');
-        $exception = new InvalidApiResponseException($response);
+        $response = $this->createApiResponse('Testing', 400);
+        $exception = new InvalidApiResponseException(new PsrRequest(), $response);
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
 
         self::assertIsArray($content);
@@ -275,6 +279,30 @@ class ExceptionHandlerTest extends TestCase
             /** @noinspection DisconnectedForeachInstructionInspection Fall through if type is unknown */
             self::assertSame('notice', $this->logger->getLogLevel());
         }
+    }
+
+    /**
+     * Create an api response object
+     *
+     * @param string $content The content to set on the response
+     * @param int $statusCode The status code to set on the response
+     *
+     * @return \EoneoPay\Externals\HttpClient\Response
+     */
+    private function createApiResponse(string $content, int $statusCode): ApiResponse
+    {
+        $stream = \fopen('php://temp', 'rb+');
+
+        if (\is_resource($stream) === true) {
+            if ($content !== '') {
+                \fwrite($stream, $content);
+                \fseek($stream, 0);
+            }
+
+            return new ApiResponse(new PsrResponse(new Stream($stream), $statusCode));
+        }
+
+        self::fail('Unable to create stream for api response');
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests\EoneoPay\Framework\Exceptions\Stubs;
 
 use EoneoPay\Externals\Logger\Interfaces\LoggerInterface;
-use Exception;
+use Throwable;
 
 class LoggerStub implements LoggerInterface
 {
@@ -72,7 +72,7 @@ class LoggerStub implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function exception(Exception $exception, ?string $level = null): void
+    public function exception(Throwable $exception, ?string $level = null, ?array $context = null): void
     {
         $this->log(
             $level ?? 'notice',

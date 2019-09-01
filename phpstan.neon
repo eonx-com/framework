@@ -3,3 +3,6 @@ parameters:
         -
             message: '#Parameter \#1 \$app of class EoneoPay\\Framework\\Providers\\FrameworkServiceProvider constructor expects Illuminate\\Contracts\\Foundation\\Application, Laravel\\Lumen\\Application given.#'
             path: tests/Providers/FrameworkServiceProviderTest.php
+        -
+            message: '#Tests\\EoneoPay\\Framework\\Stubs\\Vendor\\Laravel\\RedisQueueStub::__construct\(\) does not call parent constructor from Illuminate\\Queue\\RedisQueue\.#'
+            path: tests/Stubs/Vendor/Laravel/RedisQueueStub.php

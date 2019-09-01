@@ -7,6 +7,7 @@ use EoneoPay\ApiFormats\Bridge\Laravel\Responses\FormattedApiResponse;
 use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityInterface;
 use EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface;
+use EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface;
 use EoneoPay\Externals\Request\Interfaces\RequestInterface;
 use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use EoneoPay\Framework\Interfaces\ControllerInterface;
@@ -45,7 +46,7 @@ abstract class Controller extends BaseController implements ControllerInterface
         string $entityClass,
         RequestInterface $request
     ): FormattedApiResponseInterface {
-        /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
+        /** @var \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface $entity */
         $entity = new $entityClass($request->toArray());
 
         $this->saveEntity($entity);
@@ -62,8 +63,6 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
-     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
-     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
      * @throws \InvalidArgumentException
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -104,9 +103,6 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
      *
      * @return void
-     *
-     * @throws \EoneoPay\Externals\ORM\Exceptions\EntityValidationFailedException
-     * @throws \EoneoPay\Externals\ORM\Exceptions\ORMException
      */
     public function removeEntity(EntityInterface $entity): void
     {
@@ -122,7 +118,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param string $entityId
      * @param null|string $notFoundException
      *
-     * @return \EoneoPay\Externals\ORM\Interfaces\EntityInterface
+     * @return \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface
      *
      * @throws \EoneoPay\Utils\Exceptions\NotFoundException
      */
@@ -130,17 +126,17 @@ abstract class Controller extends BaseController implements ControllerInterface
         string $entityClass,
         string $entityId,
         ?string $notFoundException = null
-    ): EntityInterface {
+    ): MagicEntityInterface {
         $entity = $this->getEntityManager()->getRepository($entityClass)->find($entityId);
 
-        if (($entity instanceof EntityInterface) === false) {
+        if (($entity instanceof MagicEntityInterface) === false) {
             $exceptionClass = $notFoundException ?? EntityNotFoundException::class;
 
             throw new $exceptionClass(\sprintf('%s %s not found', $entityClass, $entityId));
         }
 
         /**
-         * @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity
+         * @var \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface $entity
          *
          * @see https://youtrack.jetbrains.com/issue/WI-37859 - typehint required until PhpStorm recognises === check
          */
@@ -186,8 +182,8 @@ abstract class Controller extends BaseController implements ControllerInterface
         RequestInterface $request,
         ?string $notFoundException = null
     ): FormattedApiResponseInterface {
-        /** @var \EoneoPay\Externals\ORM\Interfaces\EntityInterface $entity */
         $entity = $this->retrieveEntity($entityClass, $entityId, $notFoundException);
+
         $entity->fill($request->toArray());
 
         $this->saveEntity($entity);
