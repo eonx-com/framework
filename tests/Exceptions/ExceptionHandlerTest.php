@@ -17,7 +17,6 @@ use EoneoPay\Utils\XmlConverter;
 use Exception;
 use Illuminate\Filesystem\Filesystem as ContractedFilesystem;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator as ContractedTranslator;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -108,6 +107,21 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
+     * Create exception handler instance
+     *
+     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
+     */
+    private function createExceptionHandler(): ExceptionHandler
+    {
+        return new ExceptionHandlerStub(
+            new EncoderGuesser([]),
+            $this->logger,
+            new Psr7Factory(),
+            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
+        );
+    }
+
+    /**
      * Test default messages for client exceptions
      *
      * @return void
@@ -186,6 +200,30 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
+     * Create an api response object
+     *
+     * @param string $content The content to set on the response
+     * @param int $statusCode The status code to set on the response
+     *
+     * @return \EoneoPay\Externals\HttpClient\Response
+     */
+    private function createApiResponse(string $content, int $statusCode): ApiResponse
+    {
+        $stream = \fopen('php://temp', 'rb+');
+
+        if (\is_resource($stream) === true) {
+            if ($content !== '') {
+                \fwrite($stream, $content);
+                \fseek($stream, 0);
+            }
+
+            return new ApiResponse(new PsrResponse(new Stream($stream), $statusCode));
+        }
+
+        self::fail('Unable to create stream for api response');
+    }
+
+    /**
      * Test exception handler always return right response.
      *
      * @return void
@@ -198,11 +236,11 @@ class ExceptionHandlerTest extends TestCase
         $exceptionHandler = $this->createExceptionHandler();
 
         foreach ($this->exceptions as $exception) {
-            $response = $exceptionHandler->render(new Request(), $exception);
-
-            /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
-            self::assertInstanceOf(Response::class, $response);
+            $exceptionHandler->render(new Request(), $exception);
         }
+
+        // If exception wasn't thrown the test is good
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -279,44 +317,5 @@ class ExceptionHandlerTest extends TestCase
             /** @noinspection DisconnectedForeachInstructionInspection Fall through if type is unknown */
             self::assertSame('notice', $this->logger->getLogLevel());
         }
-    }
-
-    /**
-     * Create an api response object
-     *
-     * @param string $content The content to set on the response
-     * @param int $statusCode The status code to set on the response
-     *
-     * @return \EoneoPay\Externals\HttpClient\Response
-     */
-    private function createApiResponse(string $content, int $statusCode): ApiResponse
-    {
-        $stream = \fopen('php://temp', 'rb+');
-
-        if (\is_resource($stream) === true) {
-            if ($content !== '') {
-                \fwrite($stream, $content);
-                \fseek($stream, 0);
-            }
-
-            return new ApiResponse(new PsrResponse(new Stream($stream), $statusCode));
-        }
-
-        self::fail('Unable to create stream for api response');
-    }
-
-    /**
-     * Create exception handler instance
-     *
-     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
-     */
-    private function createExceptionHandler(): ExceptionHandler
-    {
-        return new ExceptionHandlerStub(
-            new EncoderGuesser([]),
-            $this->logger,
-            new Psr7Factory(),
-            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
-        );
     }
 }

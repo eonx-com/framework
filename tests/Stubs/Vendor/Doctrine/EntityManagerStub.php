@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\EoneoPay\Framework\Stubs\Vendor\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\UnitOfWork;
 
@@ -131,10 +132,15 @@ class EntityManagerStub implements EntityManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get class metadata for an entity.
+     *
+     * @param mixed $className The classname to get the metadata for
+     *
+     * @return \Doctrine\ORM\Mapping\ClassMetadata
      */
-    public function getClassMetadata($className)
+    public function getClassMetadata($className): ClassMetadata
     {
+        return new ClassMetadata((string)$className);
     }
 
     /**
@@ -221,6 +227,7 @@ class EntityManagerStub implements EntityManagerInterface
      */
     public function getUnitOfWork(): UnitOfWork
     {
+        return new UnitOfWork($this);
     }
 
     /**
