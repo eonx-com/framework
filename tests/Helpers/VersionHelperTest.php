@@ -10,6 +10,9 @@ use EoneoPay\Framework\Helpers\VersionHelper;
 use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
+/**
+ * @covers \EoneoPay\Framework\Helpers\VersionHelper
+ */
 class VersionHelperTest extends TestCase
 {
     /**
@@ -25,7 +28,7 @@ class VersionHelperTest extends TestCase
             'invalid' => 'V1',
             'vnd.eoneopay.v1+' => 'V1',
             'vnd.eoneopay.v2+' => 'V2',
-            'vnd.eoneopay.v3+' => 'V3'
+            'vnd.eoneopay.v3+' => 'V3',
         ];
 
         foreach ($tests as $header => $version) {
@@ -87,14 +90,14 @@ class VersionHelperTest extends TestCase
             ['eoneo_pay', 'eoneopay.box', null],
             ['ewallet', 'ewallet.box', null],
             ['Nate_App', 'nate-app.nate', 6],
-            ['nate-da-bomb', 'nate_da_bomb.com', 1]
+            ['nate-da-bomb', 'nate_da_bomb.com', 1],
         ];
         $tests = [
             ['eoneopay.local', 'vnd.eoneopay.v1+', 1, 'EoneoPay'],
             ['eoneopay.box', 'vnd.eoneopay.v2+', 1, 'EoneoPay'],
             ['ewallet.box', 'vnd.ewallet.v4+', 1, 'Ewallet'],
             ['nate-app.nate', 'vnd.eoneopay.v1+', 6, 'NateApp'],
-            ['nate_da_bomb.com', 'vnd.eoneopay.v3+', 3, 'NateDaBomb']
+            ['nate_da_bomb.com', 'vnd.eoneopay.v3+', 3, 'NateDaBomb'],
         ];
 
         $patternControllers = 'App\Http\Controllers\V%s\%s';
@@ -103,7 +106,7 @@ class VersionHelperTest extends TestCase
         foreach ($tests as $test) {
             $request = new Request(new HttpRequest([], [], [], [], [], [
                 'HTTP_ACCEPT' => $test[1],
-                'HTTP_HOST' => $test[0]
+                'HTTP_HOST' => $test[0],
             ]));
 
             self::assertSame(

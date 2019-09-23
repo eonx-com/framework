@@ -9,7 +9,7 @@ use Exception;
 class ClientExceptionStub extends Exception implements ClientExceptionInterface
 {
     /**
-     * Status code
+     * Status code.
      *
      * @var int
      */
@@ -48,7 +48,7 @@ class ClientExceptionStub extends Exception implements ClientExceptionInterface
     }
 
     /**
-     * Set status code
+     * Set status code.
      *
      * @param int $statusCode
      *

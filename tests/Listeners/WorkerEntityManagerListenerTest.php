@@ -12,34 +12,14 @@ use Tests\EoneoPay\Framework\Stubs\Vendor\Doctrine\EntityManagerStub;
 use Tests\EoneoPay\Framework\Stubs\Vendor\Laravel\RedisQueueStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
+/**
+ * @covers \EoneoPay\Framework\Listeners\WorkerEntityManagerListener
+ */
 class WorkerEntityManagerListenerTest extends TestCase
 {
     /**
      * Tests handle will not clear the entity manager when the job does
-     * not implement ShouldQueue
-     *
-     * @return void
-     */
-    public function testHandleSyncJob(): void
-    {
-        $entityManager = new EntityManagerStub();
-        $listener = new WorkerEntityManagerListener($entityManager);
-
-        $job = new SyncJob(
-            new Container(),
-            'payload',
-            'connection',
-            'queue'
-        );
-
-        $listener->handle(new JobProcessing('connection', $job));
-
-        static::assertFalse($entityManager->isCleared());
-    }
-
-    /**
-     * Tests handle will not clear the entity manager when the job does
-     * not implement ShouldQueue
+     * not implement ShouldQueue.
      *
      * @return void
      */
@@ -59,6 +39,29 @@ class WorkerEntityManagerListenerTest extends TestCase
 
         $listener->handle(new JobProcessing('connection', $job));
 
-        static::assertTrue($entityManager->isCleared());
+        self::assertTrue($entityManager->isCleared());
+    }
+
+    /**
+     * Tests handle will not clear the entity manager when the job does
+     * not implement ShouldQueue.
+     *
+     * @return void
+     */
+    public function testHandleSyncJob(): void
+    {
+        $entityManager = new EntityManagerStub();
+        $listener = new WorkerEntityManagerListener($entityManager);
+
+        $job = new SyncJob(
+            new Container(),
+            'payload',
+            'connection',
+            'queue'
+        );
+
+        $listener->handle(new JobProcessing('connection', $job));
+
+        self::assertFalse($entityManager->isCleared());
     }
 }
