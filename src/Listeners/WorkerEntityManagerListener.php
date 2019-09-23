@@ -28,7 +28,7 @@ class WorkerEntityManagerListener
     private $entityManager;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      */

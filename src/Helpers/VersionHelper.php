@@ -44,7 +44,7 @@ class VersionHelper implements VersionHelperInterface
     /**
      * Requested application name.
      *
-     * @var null|string
+     * @var string|null
      */
     private $requestApplication;
 
@@ -70,7 +70,7 @@ class VersionHelper implements VersionHelperInterface
      *
      * @param string $basePath
      * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     * @param null|int|string $defaultVersion
+     * @param int|string|null $defaultVersion
      */
     public function __construct(
         string $basePath,
@@ -87,7 +87,7 @@ class VersionHelper implements VersionHelperInterface
      *
      * @param string $name The name of the application.
      * @param string $host The HTTP host of the application.
-     * @param null|int|string $latestVersion The latest version of the application (default to 1).
+     * @param int|string|null $latestVersion The latest version of the application (default to 1).
      *
      * @return \EoneoPay\Framework\Helpers\Interfaces\VersionHelperInterface
      */
@@ -194,7 +194,7 @@ class VersionHelper implements VersionHelperInterface
      * Generate route file path for given version and application.
      *
      * @param string $version
-     * @param null|string $application
+     * @param string|null $application
      *
      * @return string
      */
@@ -210,7 +210,7 @@ class VersionHelper implements VersionHelperInterface
     /**
      * Get application name based on configured hosts and current request.
      *
-     * @return null|string
+     * @return string|null
      */
     private function getApplicationName(): ?string
     {

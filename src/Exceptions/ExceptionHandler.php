@@ -44,21 +44,21 @@ abstract class ExceptionHandler extends Handler
     protected $encoder;
 
     /**
-     * PSR7 factory instance
+     * PSR7 factory instance.
      *
      * @var \EoneoPay\ApiFormats\Interfaces\EncoderGuesserInterface
      */
     private $encoderGuesser;
 
     /**
-     * Logger instance
+     * Logger instance.
      *
      * @var \EoneoPay\Externals\Logger\Interfaces\LoggerInterface
      */
     private $logger;
 
     /**
-     * Translator instance
+     * Translator instance.
      *
      * @var \EoneoPay\Externals\Translator\Interfaces\TranslatorInterface
      */
@@ -147,27 +147,29 @@ abstract class ExceptionHandler extends Handler
     {
         parent::renderForConsole($output, $exception);
 
-        if (($exception instanceof ValidationExceptionInterface) === true) {
-            /**
-             * @var \EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface $exception
-             */
-            $output->writeln('<error>Validation Failures:</error>');
+        if (($exception instanceof ValidationExceptionInterface) === false) {
+            return; // @codeCoverageIgnore
+        }
 
-            if (\count($exception->getErrors()) === 0) {
-                $output->writeln('No validation errors in exception');
+        /**
+         * @var \EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface $exception
+         */
+        $output->writeln('<error>Validation Failures:</error>');
 
-                return;
-            }
+        if (\count($exception->getErrors()) === 0) {
+            $output->writeln('No validation errors in exception');
 
-            foreach ($exception->getErrors() as $key => $errors) {
-                /** @var mixed[] $error */
-                foreach ($errors as $error) {
-                    $output->writeln(\sprintf(
-                        '<error>%s</error> - %s',
-                        $key,
-                        \json_encode($error)
-                    ));
-                }
+            return;
+        }
+
+        foreach ($exception->getErrors() as $key => $errors) {
+            /** @var mixed[] $error */
+            foreach ($errors as $error) {
+                $output->writeln(\sprintf(
+                    '<error>%s</error> - %s',
+                    $key,
+                    \json_encode($error)
+                ));
             }
         }
     }
@@ -199,7 +201,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Initiate the list of exceptions to suppress from the report method
+     * Initiate the list of exceptions to suppress from the report method.
      *
      * @return string[]
      */
@@ -246,7 +248,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Get exception timestamp
+     * Get exception timestamp.
      *
      * @return string
      *
@@ -258,7 +260,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Handle a client exception (40x error that is not validation related)
+     * Handle a client exception (40x error that is not validation related).
      *
      * @param \EoneoPay\Utils\Interfaces\Exceptions\ClientExceptionInterface $exception The exception to handle
      *
@@ -271,28 +273,44 @@ abstract class ExceptionHandler extends Handler
     {
         // Get message
         switch ($exception->getStatusCode()) {
-            case 401: // @codeCoverageIgnore
+            // @codeCoverageIgnoreStart
+            case 401:
+                /** @codeCoverageIgnoreEnd */
                 $message = 'Unauthorised.';
+
                 break;
 
-            case 403: // @codeCoverageIgnore
+            // @codeCoverageIgnoreStart
+            case 403:
+                /** @codeCoverageIgnoreEnd */
                 $message = 'Forbidden.';
+
                 break;
 
-            case 404: // @codeCoverageIgnore
+            // @codeCoverageIgnoreStart
+            case 404:
+                /** @codeCoverageIgnoreEnd */
                 $message = 'Not found.';
+
                 break;
 
-            case 406: // @codeCoverageIgnore
+            // @codeCoverageIgnoreStart
+            case 406:
+                /** @codeCoverageIgnoreEnd */
                 $message = 'Not acceptable.';
+
                 break;
 
-            case 409: // @codeCoverageIgnore
+            // @codeCoverageIgnoreStart
+            case 409:
+                /** @codeCoverageIgnoreEnd */
                 $message = 'Conflict.';
+
                 break;
 
             default:
                 $message = 'Bad request.';
+
                 break;
         }
 
@@ -300,7 +318,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Determine if we're in production or not
+     * Determine if we're in production or not.
      *
      * @return bool
      */
@@ -310,7 +328,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Determine if a string is json
+     * Determine if a string is json.
      *
      * @param string $string The string to check
      *
@@ -324,7 +342,7 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Convert exception into response
+     * Convert exception into response.
      *
      * @param \EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface $exception The exception to render
      * @param string $message The default message to use when displaying this exception in production
@@ -343,12 +361,12 @@ abstract class ExceptionHandler extends Handler
             'code' => $exception->getErrorCode(),
             'message' => $this->getExceptionMessage($exception, $message),
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => $this->getTimestamp()
+            'time' => $this->getTimestamp(),
         ], $extra ?? [])), $exception->getStatusCode()));
     }
 
     /**
-     * Create response for invalid api exceptions
+     * Create response for invalid api exceptions.
      *
      * @param \EoneoPay\Externals\HttpClient\Interfaces\InvalidApiResponseExceptionInterface $exception The exception
      * @param string|null $message The message to display in production
@@ -384,7 +402,7 @@ abstract class ExceptionHandler extends Handler
             'code' => $exception->getErrorCode(),
             'message' => $decoded ?? $message ?? 'An unknown error occured.',
             'sub_code' => $exception->getErrorSubCode(),
-            'time' => $this->getTimestamp()
+            'time' => $this->getTimestamp(),
         ], $exception->getResponse()->getStatusCode()));
     }
 
@@ -412,12 +430,12 @@ abstract class ExceptionHandler extends Handler
                 $message ?? 'An unknown error occured.'
             ),
             'sub_code' => 0,
-            'time' => $this->getTimestamp()
+            'time' => $this->getTimestamp(),
         ], $statusCode ?? 500));
     }
 
     /**
-     * Handle a validation exception
+     * Handle a validation exception.
      *
      * @param \EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface $exception The exception to handle
      *

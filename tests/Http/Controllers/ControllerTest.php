@@ -13,6 +13,8 @@ use Tests\EoneoPay\Framework\Http\Stubs\ControllerStub;
 use Tests\EoneoPay\Framework\TestCases\WithEntityManagerTestCase;
 
 /**
+ * @covers \EoneoPay\Framework\Http\Controllers\Controller
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to flexibility of the base controller
  */
 class ControllerTest extends WithEntityManagerTestCase

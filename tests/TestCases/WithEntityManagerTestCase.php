@@ -27,14 +27,14 @@ abstract class WithEntityManagerTestCase extends TestCase
      */
     public static $connection = [
         'driver' => 'pdo_sqlite',
-        'path' => ':memory:'
+        'path' => ':memory:',
     ];
 
     /**
      * @var string[]
      */
     public static $paths = [
-        __DIR__ . '/../Database/Stubs'
+        __DIR__.'/../Database/Stubs',
     ];
 
     /**

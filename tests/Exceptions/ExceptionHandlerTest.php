@@ -37,26 +37,28 @@ use Zend\Diactoros\Stream;
 /**
  * @noinspection EfferentObjectCouplingInspection High coupling required to full test handler
  *
+ * @covers \EoneoPay\Framework\Exceptions\ExceptionHandler
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to all eventual exceptions to handle
  */
 class ExceptionHandlerTest extends TestCase
 {
     /**
-     * Exceptions to test against
+     * Exceptions to test against.
      *
      * @var \Exception[]
      */
     private $exceptions;
 
     /**
-     * Logger instance
+     * Logger instance.
      *
      * @var \Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub
      */
     private $logger;
 
     /**
-     * Set up exception list
+     * Set up exception list.
      *
      * @return void
      */
@@ -71,14 +73,14 @@ class ExceptionHandlerTest extends TestCase
             new EntityStubNotFoundException(),
             new EntityStubValidationFailedException(null, null, null, null, ['error' => ['test' => true]]),
             new NotFoundHttpException(),
-            new RuntimeExceptionStub()
+            new RuntimeExceptionStub(),
         ];
 
         $this->logger = new LoggerStub();
     }
 
     /**
-     * Test messages don't expose information in production
+     * Test messages don't expose information in production.
      *
      * @return void
      *
@@ -107,22 +109,7 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
-     * Create exception handler instance
-     *
-     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
-     */
-    private function createExceptionHandler(): ExceptionHandler
-    {
-        return new ExceptionHandlerStub(
-            new EncoderGuesser([]),
-            $this->logger,
-            new Psr7Factory(),
-            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
-        );
-    }
-
-    /**
-     * Test default messages for client exceptions
+     * Test default messages for client exceptions.
      *
      * @return void
      *
@@ -137,7 +124,7 @@ class ExceptionHandlerTest extends TestCase
             403 => 'Forbidden.',
             404 => 'Not found.',
             406 => 'Not acceptable.',
-            409 => 'Conflict.'
+            409 => 'Conflict.',
         ];
 
         $exceptionHandler = $this->createExceptionHandler();
@@ -153,7 +140,7 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
-     * Test invalid api response is handled correctly
+     * Test invalid api response is handled correctly.
      *
      * @return void
      *
@@ -167,8 +154,8 @@ class ExceptionHandlerTest extends TestCase
             'key' => 'data',
             'subkey' => [
                 'keya' => 'test',
-                'keyb' => 'test2'
-            ]
+                'keyb' => 'test2',
+            ],
         ];
 
         $exceptionHandler = $this->createExceptionHandler();
@@ -197,30 +184,6 @@ class ExceptionHandlerTest extends TestCase
 
         self::assertIsArray($content);
         self::assertSame('Testing', $content['message'] ?? []);
-    }
-
-    /**
-     * Create an api response object
-     *
-     * @param string $content The content to set on the response
-     * @param int $statusCode The status code to set on the response
-     *
-     * @return \EoneoPay\Externals\HttpClient\Response
-     */
-    private function createApiResponse(string $content, int $statusCode): ApiResponse
-    {
-        $stream = \fopen('php://temp', 'rb+');
-
-        if (\is_resource($stream) === true) {
-            if ($content !== '') {
-                \fwrite($stream, $content);
-                \fseek($stream, 0);
-            }
-
-            return new ApiResponse(new PsrResponse(new Stream($stream), $statusCode));
-        }
-
-        self::fail('Unable to create stream for api response');
     }
 
     /**
@@ -260,13 +223,13 @@ class ExceptionHandlerTest extends TestCase
             null,
             [
                 'property' => [
-                    'Property must not be null'
-                ]
+                    'Property must not be null',
+                ],
             ]
         );
         $exceptionHandler->renderForConsole($output, $exception);
 
-        self::assertContains('property - "Property must not be null"', $output->fetch());
+        self::assertStringContainsString('property - "Property must not be null"', $output->fetch());
     }
 
     /**
@@ -282,11 +245,11 @@ class ExceptionHandlerTest extends TestCase
         $exception = new ValidationExceptionStub();
         $exceptionHandler->renderForConsole($output, $exception);
 
-        self::assertContains('No validation errors in exception', $output->fetch());
+        self::assertStringContainsString('No validation errors in exception', $output->fetch());
     }
 
     /**
-     * Test reporting an exception
+     * Test reporting an exception.
      *
      * @return void
      *
@@ -306,16 +269,57 @@ class ExceptionHandlerTest extends TestCase
             // Check logger
             if ($exception instanceof CriticalException) {
                 self::assertSame('critical', $this->logger->getLogLevel());
+
                 continue;
             }
 
             if ($exception instanceof RuntimeException) {
                 self::assertSame('error', $this->logger->getLogLevel());
+
                 continue;
             }
 
             /** @noinspection DisconnectedForeachInstructionInspection Fall through if type is unknown */
             self::assertSame('notice', $this->logger->getLogLevel());
         }
+    }
+
+    /**
+     * Create an api response object.
+     *
+     * @param string $content The content to set on the response
+     * @param int $statusCode The status code to set on the response
+     *
+     * @return \EoneoPay\Externals\HttpClient\Response
+     */
+    private function createApiResponse(string $content, int $statusCode): ApiResponse
+    {
+        $stream = \fopen('php://temp', 'rb+');
+
+        if (\is_resource($stream) === false) {
+            self::fail('Unable to create stream for api response.');
+        }
+
+        if ($content !== '') {
+            \fwrite($stream, $content);
+            \fseek($stream, 0);
+        }
+
+        return new ApiResponse(new PsrResponse(new Stream($stream), $statusCode));
+    }
+
+    /**
+     * Create exception handler instance.
+     *
+     * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
+     */
+    private function createExceptionHandler(): ExceptionHandler
+    {
+        return new ExceptionHandlerStub(
+            new EncoderGuesser([]),
+            $this->logger,
+            new Psr7Factory(),
+            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
+        );
     }
 }

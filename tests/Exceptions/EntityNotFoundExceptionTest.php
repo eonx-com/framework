@@ -7,6 +7,9 @@ use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use EoneoPay\Utils\Interfaces\BaseExceptionInterface;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
+/**
+ * @covers \EoneoPay\Framework\Exceptions\EntityNotFoundException
+ */
 class EntityNotFoundExceptionTest extends TestCase
 {
     /**

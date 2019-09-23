@@ -8,7 +8,7 @@ use EoneoPay\Framework\Exceptions\ExceptionHandler;
 class ExceptionHandlerStub extends ExceptionHandler
 {
     /**
-     * Initiate the list of exceptions to suppress from the report method
+     * Initiate the list of exceptions to suppress from the report method.
      *
      * @return string[]
      */

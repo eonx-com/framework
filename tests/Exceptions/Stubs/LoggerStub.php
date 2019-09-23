@@ -9,21 +9,21 @@ use Throwable;
 class LoggerStub implements LoggerInterface
 {
     /**
-     * Log context
+     * Log context.
      *
      * @var mixed[]|null
      */
     private $context;
 
     /**
-     * Log level
+     * Log level.
      *
      * @var string
      */
     private $logLevel;
 
     /**
-     * Log message
+     * Log message.
      *
      * @var string
      */
@@ -82,7 +82,7 @@ class LoggerStub implements LoggerInterface
     }
 
     /**
-     * Get log level
+     * Get log level.
      *
      * @return string|null
      */
