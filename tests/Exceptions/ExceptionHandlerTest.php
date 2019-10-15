@@ -5,7 +5,6 @@ namespace Tests\EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\EncoderGuesser;
 use EoneoPay\ApiFormats\External\Libraries\Psr7\Psr7Factory;
-use EoneoPay\Externals\Bridge\Laravel\Translator;
 use EoneoPay\Externals\Environment\Env;
 use EoneoPay\Externals\HttpClient\Exceptions\InvalidApiResponseException;
 use EoneoPay\Externals\HttpClient\Response as ApiResponse;
@@ -15,11 +14,8 @@ use EoneoPay\Utils\Exceptions\CriticalException;
 use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\XmlConverter;
 use Exception;
-use Illuminate\Filesystem\Filesystem as ContractedFilesystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Translation\FileLoader;
-use Illuminate\Translation\Translator as ContractedTranslator;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
@@ -29,6 +25,7 @@ use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ExceptionHandlerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
+use Tests\EoneoPay\Framework\Exceptions\Stubs\TranslatorStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ValidationExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 use Zend\Diactoros\Request as PsrRequest;
@@ -248,6 +245,22 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
+     * Tests that render for console returns translated strings.
+     *
+     * @return void
+     */
+    public function testRenderForConsoleTranslated(): void
+    {
+        $exceptionHandler = $this->createExceptionHandler();
+
+        $output = new BufferedOutput();
+
+        $exceptionHandler->renderForConsole($output, new Exception('translated-key'));
+
+        self::assertStringContainsString('yes this is translated', $output->fetch());
+    }
+
+    /**
      * Test reporting an exception
      *
      * @return void
@@ -316,7 +329,7 @@ class ExceptionHandlerTest extends TestCase
             new EncoderGuesser([]),
             $this->logger,
             new Psr7Factory(),
-            new Translator(new ContractedTranslator(new FileLoader(new ContractedFilesystem(), __DIR__), 'en'))
+            new TranslatorStub(['translated-key' => 'yes this is translated'])
         );
     }
 }

@@ -20,9 +20,11 @@ use EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface;
 use EoneoPay\Utils\UtcDateTime;
 use EoneoPay\Utils\XmlConverter;
 use Exception;
+use Illuminate\Console\OutputStyle;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Exceptions\Handler;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -145,6 +147,13 @@ abstract class ExceptionHandler extends Handler
      */
     public function renderForConsole($output, Exception $exception): void
     {
+        // Translate the exception message
+        $style = new OutputStyle(new ArrayInput([]), $output);
+        $style->caution(\sprintf(
+            'Translated exception message: %s',
+            $this->getExceptionMessage($exception, 'Unknown')
+        ));
+
         parent::renderForConsole($output, $exception);
 
         if (($exception instanceof ValidationExceptionInterface) === true) {
