@@ -15,7 +15,6 @@ use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\XmlConverter;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
@@ -263,7 +262,7 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
-     * Test reporting an exception
+     * Test reporting an exception.
      *
      * @return void
      *
