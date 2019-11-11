@@ -9,9 +9,9 @@
   "type": "project",
   "require": {
     "php": ">=7.2",
-    "eoneopay/apiformats": "dev-master",
-    "eoneopay/externals": "^1.1",
-    "eoneopay/utils": "^0.2",
+    "eonx-com/apiformats": "^1.0",
+    "eonx-com/externals": "^1.0",
+    "eonx-com/utils": "^1.0",
     "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
     "laravel-doctrine/orm": "^1.4",
@@ -26,6 +26,9 @@
     "roave/security-advisories": "dev-master",
     "sebastian/phpcpd": "^4.0",
     "squizlabs/php_codesniffer": "3.*"
+  },
+  "replace": {
+    "eoneopay/framework": "^0.2"
   },
   "autoload": {
     "psr-4": {
