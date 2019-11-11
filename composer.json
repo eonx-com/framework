@@ -1,6 +1,6 @@
 {
-  "name": "eoneopay/framework",
-  "description": "The EoneoPay Framework",
+  "name": "eonx-com/framework",
+  "description": "The EonX Framework",
   "keywords": [
     "eoneopay",
     "framework"
@@ -10,7 +10,7 @@
   "require": {
     "php": ">=7.2",
     "eoneopay/apiformats": "dev-master",
-    "eoneopay/externals": "^1.0",
+    "eoneopay/externals": "^1.1",
     "eoneopay/utils": "^0.2",
     "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
@@ -18,7 +18,8 @@
     "vlucas/phpdotenv": "^3.0"
   },
   "require-dev": {
-    "eoneopay/standards": "dev-master",
+    "eonx-com/standards": "^0.2",
+    "friendsofphp/php-cs-fixer": "^2.15",
     "phpmd/phpmd": "^2.6",
     "phpstan/phpstan": "^0.11",
     "phpunit/phpunit": "^7.0",
