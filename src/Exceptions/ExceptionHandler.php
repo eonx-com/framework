@@ -104,11 +104,6 @@ abstract class ExceptionHandler extends Handler
     {
         $this->setEncoder($request); // Set encoder to allow rendering methods to use it
 
-        // Handle client exceptions
-        if ($exception instanceof ClientExceptionInterface) {
-            return $this->renderException($exception);
-        }
-
         // Handle validation exceptions
         if ($exception instanceof ValidationExceptionInterface) {
             return $this->renderException(
