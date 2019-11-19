@@ -5,6 +5,7 @@ namespace Tests\EoneoPay\Framework\Exceptions;
 
 use EoneoPay\ApiFormats\EncoderGuesser;
 use EoneoPay\ApiFormats\External\Libraries\Psr7\Psr7Factory;
+use EoneoPay\Externals\Bridge\Laravel\Translator;
 use EoneoPay\Externals\Environment\Env;
 use EoneoPay\Externals\HttpClient\Exceptions\InvalidApiResponseException;
 use EoneoPay\Externals\HttpClient\Response as ApiResponse;
@@ -15,6 +16,8 @@ use EoneoPay\Utils\Exceptions\RuntimeException;
 use EoneoPay\Utils\XmlConverter;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Translation\ArrayLoader;
+use Illuminate\Translation\Translator as ContractedTranslator;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStubNotFoundException;
@@ -24,7 +27,6 @@ use Tests\EoneoPay\Framework\Exceptions\Stubs\CriticalExceptionStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ExceptionHandlerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\LoggerStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\RuntimeExceptionStub;
-use Tests\EoneoPay\Framework\Exceptions\Stubs\TranslatorStub;
 use Tests\EoneoPay\Framework\Exceptions\Stubs\ValidationExceptionStub;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 use Zend\Diactoros\Request as PsrRequest;
@@ -99,7 +101,7 @@ class ExceptionHandlerTest extends TestCase
         $env->set('APP_ENV', 'production');
 
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
-        self::assertSame('An unknown error occured.', $content['message'] ?? 'error');
+        self::assertSame('An error occurred, try again shortly.', $content['message'] ?? 'error');
 
         // Reset environment
         $env->set('APP_ENV', $environment);
@@ -118,10 +120,45 @@ class ExceptionHandlerTest extends TestCase
         $codes = [
             400 => 'Bad request.',
             401 => 'Unauthorised.',
+            402 => 'Payment required.',
             403 => 'Forbidden.',
             404 => 'Not found.',
+            405 => 'Method not allowed.',
             406 => 'Not acceptable.',
+            407 => 'Proxy authentication required.',
+            408 => 'Request time-out.',
             409 => 'Conflict.',
+            410 => 'Gone.',
+            411 => 'Length required.',
+            412 => 'Precondition failed.',
+            413 => 'Payload too large.',
+            414 => 'URI too long.',
+            415 => 'Unsupported media type.',
+            416 => 'Range not satisfiable.',
+            417 => 'Expectation failed.',
+            418 => "I'm a teapot.",
+            421 => 'Misdirected request.',
+            422 => 'Unprocessable entity.',
+            423 => 'Locked.',
+            424 => 'Failed dependency.',
+            425 => 'Too early.',
+            426 => 'Upgrade required.',
+            428 => 'Precondition required.',
+            429 => 'Too many requests.',
+            431 => 'Request header fields too large.',
+            451 => 'Unavailable for legal reasons.',
+            500 => 'Internal server error.',
+            501 => 'Not implemented.',
+            502 => 'Bad gateway.',
+            503 => 'Service unavailable.',
+            504 => 'Gateway time-out.',
+            505 => 'HTTP version not supported.',
+            506 => 'Variant also negotiates.',
+            507 => 'Insufficient storage.',
+            508 => 'Loop detected.',
+            510 => 'Not extended.',
+            511 => 'Network authentication required.',
+            599 => 'Internal server error.',
         ];
 
         $exceptionHandler = $this->createExceptionHandler();
@@ -164,7 +201,7 @@ class ExceptionHandlerTest extends TestCase
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
 
         self::assertIsArray($content);
-        self::assertSame(\array_merge($data, ['@rootNode' => 'data']), $content['message'] ?? []);
+        self::assertSame(\array_merge(['@rootNode' => 'data'], $data), $content['message'] ?? []);
 
         // Build a json response
         $response = $this->createApiResponse(\json_encode($data) ?: '', 400);
@@ -180,7 +217,21 @@ class ExceptionHandlerTest extends TestCase
         $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
 
         self::assertIsArray($content);
-        self::assertSame('Testing', $content['message'] ?? []);
+        self::assertSame(
+            \sprintf('Unhandled %s was thrown, unable to continue.', InvalidApiResponseException::class),
+            $content['message'] ?? []
+        );
+
+        // Test production message
+        $env = new Env();
+        $environment = $env->get('APP_ENV');
+        $env->set('APP_ENV', 'production');
+
+        $content = \json_decode($exceptionHandler->render($request, $exception)->content(), true) ?: [];
+        self::assertSame('Invalid response received from external service.', $content['message'] ?? 'error');
+
+        // Reset environment
+        $env->set('APP_ENV', $environment);
     }
 
     /**
@@ -252,13 +303,13 @@ class ExceptionHandlerTest extends TestCase
      */
     public function testRenderForConsoleTranslated(): void
     {
-        $exceptionHandler = $this->createExceptionHandler();
+        $exceptionHandler = $this->createExceptionHandler(['translated-key' => 'Yes this is translated.']);
 
         $output = new BufferedOutput();
 
-        $exceptionHandler->renderForConsole($output, new Exception('translated-key'));
+        $exceptionHandler->renderForConsole($output, new Exception('test.translated-key'));
 
-        self::assertStringContainsString('yes this is translated', $output->fetch());
+        self::assertStringContainsString('Yes this is translated', $output->fetch());
     }
 
     /**
@@ -298,6 +349,34 @@ class ExceptionHandlerTest extends TestCase
     }
 
     /**
+     * Test translator messages are translated if they exist.
+     *
+     * @return void
+     *
+     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
+     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
+     */
+    public function testTranslatorMessagesTranslated(): void
+    {
+        $exception = new RuntimeExceptionStub('test.valid_message', ['param' => 'test']);
+
+        // Test where translator doesn't exist
+        $instance = $this->createExceptionHandler();
+        $content = \json_decode($instance->render(new Request(), $exception)->content(), true) ?: [];
+        self::assertSame('test.valid_message', $content['message']);
+
+        // Add translator message (no parameters)
+        $instance = $this->createExceptionHandler(['valid_message' => 'Valid message.']);
+        $content = \json_decode($instance->render(new Request(), $exception)->content(), true) ?: [];
+        self::assertSame('Valid message.', $content['message']);
+
+        // Add translator message (with parameters)
+        $instance = $this->createExceptionHandler(['valid_message' => 'Valid message :param.']);
+        $content = \json_decode($instance->render(new Request(), $exception)->content(), true) ?: [];
+        self::assertSame('Valid message test.', $content['message']);
+    }
+
+    /**
      * Create an api response object.
      *
      * @param string $content The content to set on the response
@@ -324,15 +403,20 @@ class ExceptionHandlerTest extends TestCase
     /**
      * Create exception handler instance.
      *
+     * @param mixed[]|null $translations Translations to use
+     *
      * @return \EoneoPay\Framework\Exceptions\ExceptionHandler
      */
-    private function createExceptionHandler(): ExceptionHandler
+    private function createExceptionHandler(?array $translations = null): ExceptionHandler
     {
+        $loader = new ArrayLoader();
+        $loader->addMessages('en', 'test', $translations ?? []);
+
         return new ExceptionHandlerStub(
             new EncoderGuesser([]),
             $this->logger,
             new Psr7Factory(),
-            new TranslatorStub(['translated-key' => 'yes this is translated'])
+            new Translator(new ContractedTranslator($loader, 'en'))
         );
     }
 }
