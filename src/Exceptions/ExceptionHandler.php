@@ -17,6 +17,7 @@ use EoneoPay\Utils\Interfaces\Exceptions\CriticalExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\RuntimeExceptionInterface;
 use EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface;
+use EoneoPay\Utils\Str;
 use EoneoPay\Utils\UtcDateTime;
 use EoneoPay\Utils\XmlConverter;
 use Exception;
@@ -25,13 +26,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Exceptions\Handler;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 /**
  * @noinspection EfferentObjectCouplingInspection High coupling required to handle all exceptions
  *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) High coupling to filter exceptions
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity) High complexity required to cover all exception types
  */
 abstract class ExceptionHandler extends Handler
 {
@@ -102,40 +104,26 @@ abstract class ExceptionHandler extends Handler
     {
         $this->setEncoder($request); // Set encoder to allow rendering methods to use it
 
-        if ($exception instanceof ClientExceptionInterface) {
-            return $this->handleClientException($exception);
-        }
-
-        if ($exception instanceof CriticalExceptionInterface) {
-            return $this->renderException($exception, $exception->getErrorMessage());
-        }
-
-        if ($exception instanceof NotFoundHttpException) {
-            return $this->renderUnsupportedException(
-                $exception,
-                'Not found.',
-                404
-            );
-        }
-
+        // Handle validation exceptions
         if ($exception instanceof ValidationExceptionInterface) {
-            return $this->renderValidationException($exception);
-        }
-
-        if ($exception instanceof InvalidApiResponseExceptionInterface) {
-            return $this->renderExternalApiException(
+            return $this->renderException(
                 $exception,
-                'Invalid response received.'
+                ['violations' => $exception->getErrors()]
             );
         }
 
-        // Catch any other exceptions using the interface
+        // Handle critical, runtime and other application exceptions
         if ($exception instanceof ExceptionInterface) {
-            return $this->renderException($exception, 'An unknown error occured.');
+            return $this->renderException($exception);
+        }
+
+        // Handle all symfony exceptions
+        if ($exception instanceof HttpException) {
+            return $this->renderUnsupportedException($exception, $exception->getStatusCode());
         }
 
         // Handle all other exceptions
-        return $this->renderUnsupportedException($exception);
+        return $this->renderUnsupportedException($exception, 500);
     }
 
     /**
@@ -151,7 +139,7 @@ abstract class ExceptionHandler extends Handler
         $style = new OutputStyle(new ArrayInput([]), $output);
         $style->caution(\sprintf(
             'Translated exception message: %s',
-            $this->getExceptionMessage($exception, 'Unknown')
+            $this->getExceptionMessage($exception)
         ));
 
         parent::renderForConsole($output, $exception);
@@ -203,7 +191,7 @@ abstract class ExceptionHandler extends Handler
             $logLevel = 'critical';
         }
 
-        $this->logger->exception($exception, $logLevel);
+        $this->logger->exception($exception, $logLevel, ['class' => \get_class($exception)]);
 
         // Throw exception for the lumen handler
         parent::report($exception);
@@ -229,17 +217,229 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Get exception message if not in production otherwise fallback to given default.
+     * Get default message for an exception based on type.
      *
      * @param \Throwable $exception The exception to get the message for
-     * @param string $default The default message to use if in production or exception message is missing
      *
      * @return string
      */
-    private function getExceptionMessage(Throwable $exception, string $default): string
+    private function getDefaultExceptionMessage(Throwable $exception): string
     {
-        if ($this->inProduction() === true || $exception->getMessage() === '') {
-            return $default;
+        if ($exception instanceof ClientExceptionInterface || $exception instanceof HttpException) {
+            $message = $this->getErrorMessageFromStatusCode($exception->getStatusCode());
+        }
+
+        if ($exception instanceof CriticalExceptionInterface) {
+            $message = $exception->getErrorMessage();
+        }
+
+        if ($exception instanceof InvalidApiResponseExceptionInterface) {
+            $message = 'Invalid response received from external service.';
+        }
+
+        if ($exception instanceof ValidationExceptionInterface) {
+            $message = 'Validation failed.';
+        }
+
+        return $message ?? 'An error occurred, try again shortly.';
+    }
+
+    /**
+     * Get an exception message from a status code.
+     *
+     * @param int $statusCode
+     *
+     * @return string
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity) High complexity required to cover all error codes
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength) Large method length required to cover all error codes
+     */
+    private function getErrorMessageFromStatusCode(int $statusCode): string
+    {
+        // Get message
+        switch ($statusCode) {
+            case 400: // @codeCoverageIgnore
+                $message = 'Bad request.';
+                break;
+
+            case 401: // @codeCoverageIgnore
+                $message = 'Unauthorised.';
+                break;
+
+            case 402: // @codeCoverageIgnore
+                $message = 'Payment required.';
+                break;
+
+            case 403: // @codeCoverageIgnore
+                $message = 'Forbidden.';
+                break;
+
+            case 404: // @codeCoverageIgnore
+                $message = 'Not found.';
+                break;
+
+            case 405: // @codeCoverageIgnore
+                $message = 'Method not allowed.';
+                break;
+
+            case 406: // @codeCoverageIgnore
+                $message = 'Not acceptable.';
+                break;
+
+            case 407: // @codeCoverageIgnore
+                $message = 'Proxy authentication required.';
+                break;
+
+            case 408: // @codeCoverageIgnore
+                $message = 'Request time-out.';
+                break;
+
+            case 409: // @codeCoverageIgnore
+                $message = 'Conflict.';
+                break;
+
+            case 410: // @codeCoverageIgnore
+                $message = 'Gone.';
+                break;
+
+            case 411: // @codeCoverageIgnore
+                $message = 'Length required.';
+                break;
+
+            case 412: // @codeCoverageIgnore
+                $message = 'Precondition failed.';
+                break;
+
+            case 413: // @codeCoverageIgnore
+                $message = 'Payload too large.';
+                break;
+
+            case 414: // @codeCoverageIgnore
+                $message = 'URI too long.';
+                break;
+
+            case 415: // @codeCoverageIgnore
+                $message = 'Unsupported media type.';
+                break;
+
+            case 416: // @codeCoverageIgnore
+                $message = 'Range not satisfiable.';
+                break;
+
+            case 417: // @codeCoverageIgnore
+                $message = 'Expectation failed.';
+                break;
+
+            case 418: // @codeCoverageIgnore
+                $message = "I'm a teapot.";
+                break;
+
+            case 421: // @codeCoverageIgnore
+                $message = 'Misdirected request.';
+                break;
+
+            case 422: // @codeCoverageIgnore
+                $message = 'Unprocessable entity.';
+                break;
+
+            case 423: // @codeCoverageIgnore
+                $message = 'Locked.';
+                break;
+
+            case 424: // @codeCoverageIgnore
+                $message = 'Failed dependency.';
+                break;
+
+            case 425: // @codeCoverageIgnore
+                $message = 'Too early.';
+                break;
+
+            case 426: // @codeCoverageIgnore
+                $message = 'Upgrade required.';
+                break;
+
+            case 428: // @codeCoverageIgnore
+                $message = 'Precondition required.';
+                break;
+
+            case 429: // @codeCoverageIgnore
+                $message = 'Too many requests.';
+                break;
+
+            case 431: // @codeCoverageIgnore
+                $message = 'Request header fields too large.';
+                break;
+
+            case 451: // @codeCoverageIgnore
+                $message = 'Unavailable for legal reasons.';
+                break;
+
+            case 501: // @codeCoverageIgnore
+                $message = 'Not implemented.';
+                break;
+
+            case 502: // @codeCoverageIgnore
+                $message = 'Bad gateway.';
+                break;
+
+            case 503: // @codeCoverageIgnore
+                $message = 'Service unavailable.';
+                break;
+
+            case 504: // @codeCoverageIgnore
+                $message = 'Gateway time-out.';
+                break;
+
+            case 505: // @codeCoverageIgnore
+                $message = 'HTTP version not supported.';
+                break;
+
+            case 506: // @codeCoverageIgnore
+                $message = 'Variant also negotiates.';
+                break;
+
+            case 507: // @codeCoverageIgnore
+                $message = 'Insufficient storage.';
+                break;
+
+            case 508: // @codeCoverageIgnore
+                $message = 'Loop detected.';
+                break;
+
+            case 510: // @codeCoverageIgnore
+                $message = 'Not extended.';
+                break;
+
+            case 511: // @codeCoverageIgnore
+                $message = 'Network authentication required.';
+                break;
+
+            default:
+                $message = 'Internal server error.';
+                break;
+        }
+
+        return $message;
+    }
+
+    /**
+     * Get exception message if not in production otherwise fallback to given default.
+     *
+     * @param \Throwable $exception The exception to get the message for
+     *
+     * @return mixed
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity) High complexity required to cover all exception types
+     * @SuppressWarnings(PHPMD.NPathComplexity) High complexity required to cover all exception types
+     */
+    private function getExceptionMessage(Throwable $exception)
+    {
+        $message = \trim($exception->getMessage());
+
+        // If the message is empty and can't be rendered, or if we're in production, return the default message
+        if (($message === '' && ($exception instanceof InvalidApiResponseExceptionInterface) === false)
+            || $this->inProduction() === true) {
+            return $this->getDefaultExceptionMessage($exception);
         }
 
         $params = [];
@@ -253,7 +453,44 @@ abstract class ExceptionHandler extends Handler
             $params = $exception->getMessageParameters();
         }
 
-        return $this->translator->trans($exception->getMessage(), $params);
+        // Try to translate the message if possible
+        $translated = $this->translator->trans($message, $params);
+
+        // If there was a translation, return it
+        if ($translated !== $message) {
+            return $translated;
+        }
+
+        // Extract error from content
+        if ($exception instanceof InvalidApiResponseExceptionInterface) {
+            $content = $exception->getResponse()->getContent();
+            $decoded = null;
+
+            $str = new Str();
+
+            // Attempt to decode xml
+            if ($str->isXml($content)) {
+                try {
+                    $decoded = (new XmlConverter())->xmlToArray($content);
+                    // @codeCoverageIgnoreStart
+                } /** @noinspection BadExceptionsProcessingInspection */ catch (InvalidXmlException $xmlException) {
+                    // This can safely be ignored and message will be displayed instead
+                    // @codeCoverageIgnoreEnd
+                }
+            }
+
+            // Attempt to decode json
+            if ($str->isJson($content) === true) {
+                $decoded = \json_decode($content, true);
+            }
+
+            if ($decoded !== null) {
+                $message = $decoded;
+            }
+        }
+
+        // Attempt to use exception message or default if no message is provided
+        return $message ?: \sprintf('Unhandled %s was thrown, unable to continue.', \get_class($exception));
     }
 
     /**
@@ -269,64 +506,6 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Handle a client exception (40x error that is not validation related).
-     *
-     * @param \EoneoPay\Utils\Interfaces\Exceptions\ClientExceptionInterface $exception The exception to handle
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
-     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
-     */
-    private function handleClientException(ClientExceptionInterface $exception): Response
-    {
-        // Get message
-        switch ($exception->getStatusCode()) {
-            // @codeCoverageIgnoreStart
-            case 401:
-                /** @codeCoverageIgnoreEnd */
-                $message = 'Unauthorised.';
-
-                break;
-
-            // @codeCoverageIgnoreStart
-            case 403:
-                /** @codeCoverageIgnoreEnd */
-                $message = 'Forbidden.';
-
-                break;
-
-            // @codeCoverageIgnoreStart
-            case 404:
-                /** @codeCoverageIgnoreEnd */
-                $message = 'Not found.';
-
-                break;
-
-            // @codeCoverageIgnoreStart
-            case 406:
-                /** @codeCoverageIgnoreEnd */
-                $message = 'Not acceptable.';
-
-                break;
-
-            // @codeCoverageIgnoreStart
-            case 409:
-                /** @codeCoverageIgnoreEnd */
-                $message = 'Conflict.';
-
-                break;
-
-            default:
-                $message = 'Bad request.';
-
-                break;
-        }
-
-        return $this->renderException($exception, $message);
-    }
-
-    /**
      * Determine if we're in production or not.
      *
      * @return bool
@@ -337,24 +516,9 @@ abstract class ExceptionHandler extends Handler
     }
 
     /**
-     * Determine if a string is json.
-     *
-     * @param string $string The string to check
-     *
-     * @return bool
-     */
-    private function isJson(string $string): bool
-    {
-        \json_decode($string, true);
-
-        return \json_last_error() === \JSON_ERROR_NONE;
-    }
-
-    /**
      * Convert exception into response.
      *
      * @param \EoneoPay\Utils\Interfaces\Exceptions\ExceptionInterface $exception The exception to render
-     * @param string $message The default message to use when displaying this exception in production
      * @param mixed[]|null $extra Additional content to add to the rendered result
      *
      * @return \Illuminate\Http\Response
@@ -362,103 +526,36 @@ abstract class ExceptionHandler extends Handler
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
-    private function renderException(ExceptionInterface $exception, string $message, ?array $extra = null): Response
+    private function renderException(ExceptionInterface $exception, ?array $extra = null): Response
     {
         $arr = new Arr();
 
         return $this->createLaravelResponseFromPsr($this->encoder->encode($arr->sort($arr->merge([
             'code' => $exception->getErrorCode(),
-            'message' => $this->getExceptionMessage($exception, $message),
+            'message' => $this->getExceptionMessage($exception),
             'sub_code' => $exception->getErrorSubCode(),
             'time' => $this->getTimestamp(),
         ], $extra ?? [])), $exception->getStatusCode()));
     }
 
     /**
-     * Create response for invalid api exceptions.
-     *
-     * @param \EoneoPay\Externals\HttpClient\Interfaces\InvalidApiResponseExceptionInterface $exception The exception
-     * @param string|null $message The message to display in production
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
-     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
-     */
-    private function renderExternalApiException(
-        InvalidApiResponseExceptionInterface $exception,
-        ?string $message = null
-    ): Response {
-        // Get content if we're not in production
-        if ($this->inProduction() === false) {
-            $content = $exception->getResponse()->getContent();
-            $decoded = $content;
-
-            // Attempt to decode json
-            if ($this->isJson($content) === true) {
-                $decoded = \json_decode($content, true) ?: $message;
-            }
-
-            // Attempt to decode xml
-            try {
-                $decoded = (new XmlConverter())->xmlToArray($content);
-            } /** @noinspection BadExceptionsProcessingInspection */ catch (InvalidXmlException $xmlException) {
-                // This can safely be ignored and message will be displayed instead
-            }
-        }
-
-        return $this->createLaravelResponseFromPsr($this->encoder->encode([
-            'code' => $exception->getErrorCode(),
-            'message' => $decoded ?? $message ?? 'An unknown error occured.',
-            'sub_code' => $exception->getErrorSubCode(),
-            'time' => $this->getTimestamp(),
-        ], $exception->getResponse()->getStatusCode()));
-    }
-
-    /**
      * Create response for unsupported exceptions.
      *
      * @param \Throwable $exception The exception to handle
-     * @param string|null $message The message to display in production
-     * @param int|null $statusCode The status code to return
+     * @param int $statusCode The status code to return
      *
      * @return \Illuminate\Http\Response
      *
      * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
      * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
      */
-    private function renderUnsupportedException(
-        Throwable $exception,
-        ?string $message = null,
-        ?int $statusCode = null
-    ): Response {
+    private function renderUnsupportedException(Throwable $exception, int $statusCode): Response
+    {
         return $this->createLaravelResponseFromPsr($this->encoder->encode([
             'code' => $exception->getCode(),
-            'message' => $this->getExceptionMessage(
-                $exception,
-                $message ?? 'An unknown error occured.'
-            ),
+            'message' => $this->getExceptionMessage($exception),
             'sub_code' => 0,
             'time' => $this->getTimestamp(),
-        ], $statusCode ?? 500));
-    }
-
-    /**
-     * Handle a validation exception.
-     *
-     * @param \EoneoPay\Utils\Interfaces\Exceptions\ValidationExceptionInterface $exception The exception to handle
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \EoneoPay\ApiFormats\Bridge\Laravel\Exceptions\InvalidPsr7FactoryException If psr7 response is invalid
-     * @throws \EoneoPay\Utils\Exceptions\InvalidDateTimeStringException If datetime constructor string is invalid
-     */
-    private function renderValidationException(ValidationExceptionInterface $exception): Response
-    {
-        return $this->renderException(
-            $exception,
-            'Validation failed.',
-            ['violations' => $exception->getErrors()]
-        );
+        ], $statusCode ?: 500));
     }
 }
