@@ -28,7 +28,7 @@ interface ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -69,7 +69,7 @@ interface ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface
      *
@@ -96,7 +96,7 @@ interface ControllerInterface
      * @param string $entityClass
      * @param string $entityId
      * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *

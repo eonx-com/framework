@@ -30,7 +30,7 @@ class EntityStub extends Entity
     /**
      * Get entity id.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getEntityId(): ?string
     {
@@ -40,7 +40,7 @@ class EntityStub extends Entity
     /**
      * Get string.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getString(): ?string
     {
@@ -62,9 +62,9 @@ class EntityStub extends Entity
     }
 
     /**
-     * Serialize entity as an array
+     * Serialize entity as an array.
      *
-     * @return string[]|int[]|array[]|bool[]
+     * @return array[]|bool[]|int[]|string[]
      */
     public function toArray(): array
     {

@@ -12,7 +12,7 @@ use Tests\EoneoPay\Framework\TestCases\TestCase;
 class UnsupportedVersionExceptionTest extends TestCase
 {
     /**
-     * Test exception returns the correct error codes
+     * Test exception returns the correct error codes.
      *
      * @return void
      */

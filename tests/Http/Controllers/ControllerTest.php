@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\EoneoPay\Framework\Http\Controllers;
 
-use EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface;
 use EoneoPay\Externals\Bridge\Laravel\Request;
+use EoneoPay\Framework\Database\Entities\Entity;
 use EoneoPay\Framework\Exceptions\EntityNotFoundException;
 use Illuminate\Http\Request as HttpRequest;
 use Tests\EoneoPay\Framework\Database\Stubs\EntityStub;
@@ -13,6 +13,8 @@ use Tests\EoneoPay\Framework\Http\Stubs\ControllerStub;
 use Tests\EoneoPay\Framework\TestCases\WithEntityManagerTestCase;
 
 /**
+ * @covers \EoneoPay\Framework\Http\Controllers\Controller
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects) Due to flexibility of the base controller
  */
 class ControllerTest extends WithEntityManagerTestCase
@@ -32,9 +34,7 @@ class ControllerTest extends WithEntityManagerTestCase
         $create = (new ControllerStub($this->getEntityManager()))
             ->createEntityAndRespond(EntityStub::class, new Request(new HttpRequest()));
 
-        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
-        self::assertInstanceOf(FormattedApiResponseInterface::class, $create);
-        self::assertInstanceOf(EntityStub::class, $create->getContent());
+        self::assertInstanceOf(Entity::class, $create->getContent());
         self::assertSame(201, $create->getStatusCode());
     }
 
@@ -57,8 +57,6 @@ class ControllerTest extends WithEntityManagerTestCase
         $controller->saveEntity($entity);
         $remove = $controller->deleteEntityAndRespond(EntityStub::class, (string)$entity->getEntityId());
 
-        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
-        self::assertInstanceOf(FormattedApiResponseInterface::class, $remove);
         self::assertSame([], $remove->getContent());
         self::assertSame(203, $remove->getStatusCode());
     }
@@ -122,9 +120,7 @@ class ControllerTest extends WithEntityManagerTestCase
             new Request(new HttpRequest())
         );
 
-        /** @noinspection UnnecessaryAssertionInspection Ensure correct class is returned */
-        self::assertInstanceOf(FormattedApiResponseInterface::class, $update);
-        self::assertInstanceOf(EntityStub::class, $update->getContent());
+        self::assertInstanceOf(Entity::class, $update->getContent());
         self::assertSame(200, $update->getStatusCode());
     }
 }

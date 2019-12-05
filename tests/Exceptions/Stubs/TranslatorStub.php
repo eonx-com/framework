@@ -13,7 +13,7 @@ class TranslatorStub implements TranslatorInterface
     private $keys;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string[] $keys
      */

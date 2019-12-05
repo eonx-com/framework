@@ -15,6 +15,9 @@ use EoneoPay\Framework\Providers\FrameworkServiceProvider;
 use Laravel\Lumen\Application;
 use Tests\EoneoPay\Framework\TestCases\TestCase;
 
+/**
+ * @covers \EoneoPay\Framework\Providers\FrameworkServiceProvider
+ */
 class FrameworkServiceProviderTest extends TestCase
 {
     /**
@@ -32,7 +35,7 @@ class FrameworkServiceProviderTest extends TestCase
             Psr7FactoryInterface::class,
             RequestInterface::class,
             TranslatorInterface::class,
-            ValidatorInterface::class
+            ValidatorInterface::class,
         ];
 
         $application = new Application();

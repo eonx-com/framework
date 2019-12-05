@@ -10,7 +10,7 @@ interface VersionHelperInterface
      *
      * @param string $name The name of the application.
      * @param string $host The HTTP host of the application (can be a regex).
-     * @param null|int|string $latestVersion The latest version of the application (default to 1).
+     * @param int|string|null $latestVersion The latest version of the application (default to 1).
      *
      * @return \EoneoPay\Framework\Helpers\Interfaces\VersionHelperInterface
      */

@@ -59,7 +59,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -111,12 +111,13 @@ abstract class Controller extends BaseController implements ControllerInterface
     }
 
     /** @noinspection PhpDocRedundantThrowsInspection Thrown dynamically */
+
     /**
      * Retrieve entity by id.
      *
      * @param string $entityClass
      * @param string $entityId
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\MagicEntityInterface
      *
@@ -167,7 +168,7 @@ abstract class Controller extends BaseController implements ControllerInterface
      * @param string $entityClass
      * @param string $entityId
      * @param \EoneoPay\Externals\Request\Interfaces\RequestInterface $request
-     * @param null|string $notFoundException
+     * @param string|null $notFoundException
      *
      * @return \EoneoPay\ApiFormats\Interfaces\FormattedApiResponseInterface
      *
@@ -192,7 +193,7 @@ abstract class Controller extends BaseController implements ControllerInterface
     }
 
     /**
-     * Get entity manager instance
+     * Get entity manager instance.
      *
      * @return \EoneoPay\Externals\ORM\Interfaces\EntityManagerInterface
      */
