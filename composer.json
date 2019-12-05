@@ -37,6 +37,11 @@
       "EoneoPay\\Framework\\": "src/"
     }
   },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.2.x-dev"
+    }
+  },
   "autoload-dev": {
     "psr-4": {
       "Tests\\EoneoPay\\Framework\\": "tests/"
