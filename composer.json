@@ -10,7 +10,7 @@
   "require": {
     "php": ">=7.2",
     "eonx-com/apiformats": "^1.0",
-    "eonx-com/externals": "^1.0",
+    "eonx-com/externals": "^1.0|^2.0",
     "eonx-com/utils": "^1.0",
     "ext-json": "*",
     "laravel/lumen-framework": "^5.5",
