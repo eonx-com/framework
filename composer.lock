@@ -1014,16 +1014,16 @@
         },
         {
             "name": "eonx-com/apiformats",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eonx-com/apiformats.git",
-                "reference": "0c7a8460c2e15c9090f53492595999a730a963cb"
+                "reference": "ac8293459fe321765bdd92c45a62964535a35064"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eonx-com/apiformats/zipball/0c7a8460c2e15c9090f53492595999a730a963cb",
-                "reference": "0c7a8460c2e15c9090f53492595999a730a963cb",
+                "url": "https://api.github.com/repos/eonx-com/apiformats/zipball/ac8293459fe321765bdd92c45a62964535a35064",
+                "reference": "ac8293459fe321765bdd92c45a62964535a35064",
                 "shasum": ""
             },
             "require": {
@@ -1077,7 +1077,7 @@
                 "eoneopay",
                 "formats"
             ],
-            "time": "2019-11-11T00:01:47+00:00"
+            "time": "2019-12-08T22:13:02+00:00"
         },
         {
             "name": "eonx-com/externals",
@@ -1175,16 +1175,16 @@
         },
         {
             "name": "eonx-com/utils",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eonx-com/utils.git",
-                "reference": "e20c1ba295ab760d43e72c1547e8d3aa69296b4e"
+                "reference": "ba295cc1b45c08dce13dc74fbdbd6e0b4d30b5c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eonx-com/utils/zipball/e20c1ba295ab760d43e72c1547e8d3aa69296b4e",
-                "reference": "e20c1ba295ab760d43e72c1547e8d3aa69296b4e",
+                "url": "https://api.github.com/repos/eonx-com/utils/zipball/ba295cc1b45c08dce13dc74fbdbd6e0b4d30b5c5",
+                "reference": "ba295cc1b45c08dce13dc74fbdbd6e0b4d30b5c5",
                 "shasum": ""
             },
             "require": {
@@ -1198,7 +1198,7 @@
             },
             "require-dev": {
                 "doctrine/annotations": "^1.6",
-                "eoneopay/standards": "dev-master",
+                "eonx-com/standards": "^0.2",
                 "ext-bcmath": "*",
                 "ext-simplexml": "*",
                 "illuminate/http": "^5.8",
@@ -1238,7 +1238,7 @@
                 "helpers",
                 "utilities"
             ],
-            "time": "2019-11-09T03:22:46+00:00"
+            "time": "2019-12-08T22:00:19+00:00"
         },
         {
             "name": "illuminate/auth",
@@ -6582,16 +6582,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.17",
+            "version": "7.5.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "4c92a15296e58191a4cd74cff3b34fc8e374174a"
+                "reference": "fcf6c4bfafaadc07785528b06385cce88935474d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4c92a15296e58191a4cd74cff3b34fc8e374174a",
-                "reference": "4c92a15296e58191a4cd74cff3b34fc8e374174a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fcf6c4bfafaadc07785528b06385cce88935474d",
+                "reference": "fcf6c4bfafaadc07785528b06385cce88935474d",
                 "shasum": ""
             },
             "require": {
@@ -6662,7 +6662,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-28T10:37:36+00:00"
+            "time": "2019-12-06T05:14:37+00:00"
         },
         {
             "name": "roave/security-advisories",
