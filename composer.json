@@ -14,7 +14,7 @@
     "eonx-com/utils": "^1.0",
     "ext-json": "*",
     "laravel/lumen-framework": "^6.0",
-    "laravel-doctrine/orm": "^1.4",
+    "laravel-doctrine/orm": "^1.5.4",
     "vlucas/phpdotenv": "^3.0"
   },
   "require-dev": {
