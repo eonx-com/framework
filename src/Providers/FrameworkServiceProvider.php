@@ -43,7 +43,7 @@ class FrameworkServiceProvider extends ServiceProvider
         $this->app->register(FilesystemServiceProvider::class);
 
         // Logger interface - required by exception handler
-        $this->app->singleton(LoggerInterface::class, Logger::class);
+        $this->app->singletonIf(LoggerInterface::class, Logger::class);
 
         // Add bridge to doctrine - required by base controller
         $this->app->register(OrmServiceProvider::class);
